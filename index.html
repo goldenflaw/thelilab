@@ -1,2288 +1,738 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Li Lab — University of Chicago</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;0,8..60,800;1,8..60,400;1,8..60,500&display=swap" rel="stylesheet">
-    <style>
-        /* ========== CSS RESET & BASE ========== */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --navy: #800000;
-            --navy-light: #9a1515;
-            --navy-mid: #6b0000;
-            --teal: #ffa319;
-            --teal-dark: #e08c00;
-            --teal-glow: rgba(255, 163, 25, 0.12);
-            --warm-white: #faf8f5;
-            --white: #ffffff;
-            --gray-50: #f9f7f4;
-            --gray-100: #f1ede8;
-            --gray-200: #e0dbd4;
-            --gray-300: #c9c2b8;
-            --gray-400: #969086;
-            --gray-500: #6b6560;
-            --gray-600: #4a4540;
-            --gray-700: #35312d;
-            --gray-800: #252220;
-            --gray-900: #161412;
-            --text-primary: #252220;
-            --text-secondary: #4a4540;
-            --text-light: #969086;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.06);
-            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
-            --radius-sm: 0px;
-            --radius-md: 0px;
-            --radius-lg: 0px;
-            --radius-xl: 0px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        html {
-            scroll-behavior: smooth;
-            font-size: 16px;
-        }
-
-        body {
-            font-family: 'Source Serif 4', 'Georgia', 'Times New Roman', serif;
-            color: var(--text-primary);
-            background: var(--warm-white);
-            line-height: 1.7;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        img {
-            max-width: 100%;
-            display: block;
-        }
-
-        /* ========== ANIMATIONS ========== */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        @keyframes float-slow {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(5deg); }
-        }
-
-        @keyframes pulse-soft {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
-        }
-
-        @keyframes drift {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(10px, -10px); }
-            50% { transform: translate(-5px, -20px); }
-            75% { transform: translate(-15px, -5px); }
-            100% { transform: translate(0, 0); }
-        }
-
-        @keyframes helix-rotate {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .reveal-delay-1 { transition-delay: 0.1s; }
-        .reveal-delay-2 { transition-delay: 0.2s; }
-        .reveal-delay-3 { transition-delay: 0.3s; }
-        .reveal-delay-4 { transition-delay: 0.4s; }
-
-        /* ========== NAVIGATION ========== */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 0 2rem;
-            transition: all var(--transition);
-            background: transparent;
-        }
-
-        .navbar.scrolled {
-            background: rgba(128, 0, 0, 0.9);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .navbar-inner {
-            max-width: 1280px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 72px;
-        }
-
-        .nav-brand {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
-
-        .nav-brand-name {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: -0.02em;
-        }
-
-        .nav-brand-sub {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.5);
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            margin-top: -2px;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: rgba(255,255,255,0.7);
-            font-size: 0.875rem;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-sm);
-            transition: all var(--transition);
-            position: relative;
-        }
-
-        .nav-links a:hover {
-            color: #ffffff;
-            background: rgba(255,255,255,0.08);
-        }
-
-        .nav-links a.nav-cta {
-            background: var(--teal);
-            color: var(--navy);
-            font-weight: 600;
-            padding: 0.5rem 1.25rem;
-            margin-left: 0.5rem;
-        }
-
-        .nav-links a.nav-cta:hover {
-            background: var(--teal-dark);
-            color: var(--navy);
-            transform: translateY(-1px);
-        }
-
-        /* Mobile hamburger */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 8px;
-            z-index: 1001;
-            background: none;
-            border: none;
-        }
-
-        .hamburger span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background: #fff;
-            border-radius: 0px;
-            transition: all var(--transition);
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
-
-        /* Mobile nav overlay */
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(128, 0, 0, 0.98);
-            backdrop-filter: blur(20px);
-            z-index: 999;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity var(--transition);
-        }
-
-        .mobile-nav.active {
-            display: flex;
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .mobile-nav a {
-            color: #fff;
-            font-size: 1.5rem;
-            font-weight: 600;
-            padding: 0.75rem 2rem;
-            border-radius: var(--radius-sm);
-            transition: all var(--transition);
-        }
-
-        .mobile-nav a:hover {
-            background: rgba(255,255,255,0.1);
-            color: var(--teal);
-        }
-
-        /* ========== HERO SECTION ========== */
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #3d0000 0%, var(--navy) 40%, var(--navy-mid) 70%, #5a1010 100%);
-            overflow: hidden;
-            padding: 6rem 2rem 4rem;
-        }
-
-        /* Molecular background pattern */
-        .hero-bg {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        .hero-bg .dot {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0;
-            animation: pulse-soft 4s ease-in-out infinite;
-        }
-
-        .hero-bg .dot:nth-child(1) {
-            width: 6px; height: 6px;
-            background: var(--teal);
-            top: 15%; left: 10%;
-            animation-delay: 0s;
-            animation-duration: 5s;
-        }
-
-        .hero-bg .dot:nth-child(2) {
-            width: 4px; height: 4px;
-            background: rgba(255, 163, 25, 0.6);
-            top: 25%; left: 85%;
-            animation-delay: 1s;
-            animation-duration: 4s;
-        }
-
-        .hero-bg .dot:nth-child(3) {
-            width: 8px; height: 8px;
-            background: rgba(255, 163, 25, 0.3);
-            top: 70%; left: 15%;
-            animation-delay: 2s;
-            animation-duration: 6s;
-        }
-
-        .hero-bg .dot:nth-child(4) {
-            width: 5px; height: 5px;
-            background: rgba(255, 163, 25, 0.5);
-            top: 60%; left: 75%;
-            animation-delay: 0.5s;
-            animation-duration: 5.5s;
-        }
-
-        .hero-bg .dot:nth-child(5) {
-            width: 3px; height: 3px;
-            background: var(--teal);
-            top: 40%; left: 50%;
-            animation-delay: 3s;
-            animation-duration: 4.5s;
-        }
-
-        .hero-bg .dot:nth-child(6) {
-            width: 7px; height: 7px;
-            background: rgba(255, 163, 25, 0.2);
-            top: 80%; left: 90%;
-            animation-delay: 1.5s;
-            animation-duration: 7s;
-        }
-
-        /* DNA helix decoration */
-        .dna-helix {
-            position: absolute;
-            right: -40px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 200px;
-            height: 600px;
-            opacity: 0.08;
-        }
-
-        .dna-strand {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        .dna-dot {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: var(--teal);
-            border-radius: 50%;
-            animation: drift 8s ease-in-out infinite;
-        }
-
-        .dna-line {
-            position: absolute;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--teal), transparent);
-            opacity: 0.5;
-        }
-
-        /* Geometric accents */
-        .hero-geo {
-            position: absolute;
-            border: 1px solid rgba(255, 163, 25, 0.1);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        .hero-geo-1 {
-            width: 400px;
-            height: 400px;
-            top: -100px;
-            right: -100px;
-            animation: float-slow 12s ease-in-out infinite;
-        }
-
-        .hero-geo-2 {
-            width: 250px;
-            height: 250px;
-            bottom: -50px;
-            left: -80px;
-            animation: float-slow 10s ease-in-out infinite reverse;
-        }
-
-        .hero-geo-3 {
-            width: 150px;
-            height: 150px;
-            top: 30%;
-            right: 20%;
-            border-color: rgba(255, 163, 25, 0.06);
-            animation: float 8s ease-in-out infinite;
-        }
-
-        /* Grid overlay */
-        .hero-grid {
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(255, 163, 25, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 163, 25, 0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-        }
-
-        /* Gradient overlay */
-        .hero-gradient-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 200px;
-            background: linear-gradient(to bottom, transparent, var(--warm-white));
-            pointer-events: none;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 820px;
-            text-align: center;
-            animation: fadeInUp 1s ease-out;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 1rem;
-            background: rgba(255, 163, 25, 0.1);
-            border: 1px solid rgba(255, 163, 25, 0.2);
-            border-radius: 0px;
-            color: var(--teal);
-            font-size: 0.8rem;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            margin-bottom: 1.5rem;
-            animation: fadeIn 1s ease-out 0.3s both;
-        }
-
-        .hero-badge-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--teal);
-            border-radius: 50%;
-            animation: pulse-soft 2s ease-in-out infinite;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 800;
-            color: #ffffff;
-            line-height: 1.1;
-            letter-spacing: -0.03em;
-            margin-bottom: 1.5rem;
-            animation: fadeInUp 1s ease-out 0.2s both;
-        }
-
-        .hero h1 span {
-            background: linear-gradient(135deg, var(--teal), #ffd470);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1rem, 2vw, 1.2rem);
-            color: rgba(255,255,255,0.6);
-            max-width: 640px;
-            margin: 0 auto 2.5rem;
-            line-height: 1.7;
-            font-weight: 400;
-            animation: fadeInUp 1s ease-out 0.4s both;
-        }
-
-        .hero-buttons {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            animation: fadeInUp 1s ease-out 0.6s both;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.85rem 1.75rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            border-radius: var(--radius-md);
-            transition: all var(--transition);
-            cursor: pointer;
-            border: none;
-            font-family: inherit;
-        }
-
-        .btn-primary {
-            background: var(--teal);
-            color: var(--navy);
-        }
-
-        .btn-primary:hover {
-            background: var(--teal-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 163, 25, 0.3);
-        }
-
-        .btn-secondary {
-            background: rgba(255,255,255,0.08);
-            color: #ffffff;
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.14);
-            border-color: rgba(255,255,255,0.25);
-            transform: translateY(-2px);
-        }
-
-        .btn-arrow {
-            transition: transform var(--transition);
-        }
-
-        .btn:hover .btn-arrow {
-            transform: translateX(3px);
-        }
-
-        /* ========== SECTIONS COMMON ========== */
-        .section {
-            padding: 6rem 2rem;
-        }
-
-        .section-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .section-label {
-            display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--teal-dark);
-            margin-bottom: 0.75rem;
-            padding: 0.3rem 0.8rem;
-            background: var(--teal-glow);
-            border-radius: 0px;
-        }
-
-        .section-title {
-            font-size: clamp(2rem, 3.5vw, 2.75rem);
-            font-weight: 800;
-            color: var(--text-primary);
-            letter-spacing: -0.03em;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
-
-        .section-desc {
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            max-width: 650px;
-            margin: 0 auto;
-            line-height: 1.7;
-        }
-
-        /* ========== RESEARCH SECTION ========== */
-        .research {
-            background: var(--warm-white);
-        }
-
-        .research-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .research-card {
-            background: var(--white);
-            border-radius: var(--radius-lg);
-            padding: 2.25rem;
-            border: 1px solid var(--gray-200);
-            transition: all var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .research-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--teal), #ffd470);
-            opacity: 0;
-            transition: opacity var(--transition);
-        }
-
-        .research-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-xl);
-            border-color: transparent;
-        }
-
-        .research-card:hover::before {
-            opacity: 1;
-        }
-
-        .research-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.25rem;
-            font-size: 1.5rem;
-        }
-
-        .research-icon-1 {
-            background: linear-gradient(135deg, rgba(128, 0, 0, 0.1), rgba(128, 0, 0, 0.04));
-            color: #800000;
-        }
-
-        .research-icon-2 {
-            background: linear-gradient(135deg, rgba(255, 163, 25, 0.12), rgba(255, 163, 25, 0.04));
-            color: #e08c00;
-        }
-
-        .research-icon-3 {
-            background: linear-gradient(135deg, rgba(128, 0, 0, 0.08), rgba(255, 163, 25, 0.06));
-            color: #9a1515;
-        }
-
-        .research-card h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.75rem;
-            letter-spacing: -0.01em;
-        }
-
-        .research-card p {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        /* ========== TEAM SECTION ========== */
-        .team {
-            background: var(--white);
-        }
-
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .team-card {
-            background: var(--warm-white);
-            border-radius: var(--radius-lg);
-            padding: 1.75rem;
-            text-align: center;
-            transition: all var(--transition);
-            border: 1px solid transparent;
-        }
-
-        .team-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--gray-200);
-            background: var(--white);
-        }
-
-        .team-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 0px;
-            margin: 0 auto 1rem;
-            overflow: hidden;
-            position: relative;
-            background: var(--gray-200);
-        }
-
-        .team-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .team-avatar::after {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: 0px;
-            border: 2px solid transparent;
-            transition: border-color var(--transition);
-        }
-
-        .team-card:hover .team-avatar::after {
-            border-color: var(--teal);
-        }
-
-        .team-card.pi .team-avatar {
-            width: 110px;
-            height: 110px;
-        }
-        .team-name {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.15rem;
-        }
-
-        .team-title {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--teal-dark);
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            margin-bottom: 0.5rem;
-        }
-
-        .team-bio {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        /* Alumni toggle */
-        .alumni-section {
-            margin-top: 3rem;
-        }
-
-        .alumni-toggle {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: none;
-            border: 1px solid var(--gray-300);
-            padding: 0.6rem 1.25rem;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            transition: all var(--transition);
-            margin-bottom: 1.5rem;
-        }
-
-        .alumni-toggle:hover {
-            border-color: var(--teal-dark);
-            color: var(--teal-dark);
-        }
-
-        .alumni-toggle-icon {
-            transition: transform var(--transition);
-            font-size: 0.7rem;
-        }
-
-        .alumni-toggle.open .alumni-toggle-icon {
-            transform: rotate(180deg);
-        }
-
-        .alumni-list {
-            display: none;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 0.75rem;
-        }
-
-        .alumni-list.open {
-            display: grid;
-        }
-
-        .alumni-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            background: var(--gray-50);
-            border-radius: var(--radius-sm);
-            transition: all var(--transition);
-        }
-
-        .alumni-item:hover {
-            background: var(--gray-100);
-        }
-
-        .alumni-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 0px;
-            background: var(--gray-300);
-            flex-shrink: 0;
-        }
-
-        .alumni-info {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .alumni-info strong {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        /* ========== PUBLICATIONS SECTION ========== */
-        .publications {
-            background: var(--warm-white);
-        }
-
-        .pub-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .pub-card {
-            background: var(--white);
-            border-radius: var(--radius-md);
-            padding: 1.5rem 1.75rem;
-            border: 1px solid var(--gray-200);
-            transition: all var(--transition);
-            position: relative;
-        }
-
-        .pub-card:hover {
-            border-color: var(--teal);
-            box-shadow: var(--shadow-md);
-            transform: translateX(4px);
-        }
-
-        .pub-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: var(--teal);
-            border-radius: 0;
-            opacity: 0;
-            transition: opacity var(--transition);
-        }
-
-        .pub-card:hover::before {
-            opacity: 1;
-        }
-
-        .pub-year {
-            display: inline-block;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: var(--teal-dark);
-            background: var(--teal-glow);
-            padding: 0.15rem 0.5rem;
-            border-radius: 0px;
-            margin-bottom: 0.5rem;
-            letter-spacing: 0.02em;
-        }
-
-        .pub-title {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.4rem;
-            line-height: 1.4;
-            transition: color var(--transition);
-        }
-
-        .pub-title a:hover {
-            color: var(--teal-dark);
-        }
-
-        .pub-authors {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.25rem;
-            line-height: 1.5;
-        }
-
-        .pub-authors strong {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .pub-journal {
-            font-size: 0.85rem;
-            color: var(--gray-500);
-            font-style: italic;
-        }
-
-        .pub-more {
-            text-align: center;
-            margin-top: 2.5rem;
-        }
-
-        .pub-more a {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--teal-dark);
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 0.6rem 1.25rem;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--teal-dark);
-            transition: all var(--transition);
-        }
-
-        .pub-more a:hover {
-            background: var(--teal);
-            color: var(--navy);
-            border-color: var(--teal);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255, 163, 25, 0.25);
-        }
-
-        /* ========== JOIN US SECTION ========== */
-        .join {
-            background: linear-gradient(135deg, #3d0000 0%, var(--navy) 50%, var(--navy-mid) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .join .hero-grid {
-            opacity: 0.5;
-        }
-
-        .join .section-label {
-            background: rgba(255, 163, 25, 0.15);
-            color: var(--teal);
-        }
-
-        .join .section-title {
-            color: #ffffff;
-        }
-
-        .join .section-desc {
-            color: rgba(255,255,255,0.6);
-        }
-
-        .join-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .join-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            transition: all var(--transition);
-        }
-
-        .join-card:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(255, 163, 25, 0.3);
-            transform: translateY(-3px);
-        }
-
-        .join-card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-sm);
-            background: rgba(255, 163, 25, 0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.25rem;
-            font-size: 1.25rem;
-        }
-
-        .join-card h3 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 0.75rem;
-        }
-
-        .join-card p {
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.55);
-            line-height: 1.7;
-        }
-
-        .join-expectations {
-            margin-top: 1rem;
-            margin-bottom: 3rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .join-expect-col h4 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--teal);
-            margin-bottom: 1rem;
-            letter-spacing: -0.01em;
-        }
-
-        .join-expect-col ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
-        .join-expect-col li {
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.55);
-            line-height: 1.6;
-            padding-left: 1.1rem;
-            position: relative;
-        }
-
-        .join-expect-col li::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0.55rem;
-            width: 5px;
-            height: 5px;
-            background: var(--teal);
-        }
-
-        @media (max-width: 768px) {
-            .join-expectations {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .join-contact {
-            text-align: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .join-contact p {
-            color: rgba(255,255,255,0.5);
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
-        }
-
-        .join-email {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--teal);
-            font-size: 1.1rem;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border: 1px solid rgba(255, 163, 25, 0.3);
-            border-radius: var(--radius-md);
-            transition: all var(--transition);
-        }
-
-        .join-email:hover {
-            background: rgba(255, 163, 25, 0.1);
-            border-color: var(--teal);
-            transform: translateY(-2px);
-        }
-
-        /* ========== FOOTER ========== */
-        .footer {
-            background: #3a0000;
-            color: rgba(255,255,255,0.5);
-            padding: 3rem 2rem 2rem;
-        }
-
-        .footer-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr;
-            gap: 3rem;
-        }
-
-        .footer-brand-name {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 0.25rem;
-        }
-
-        .footer-brand-sub {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.35);
-            margin-bottom: 1rem;
-        }
-
-        .footer-address {
-            font-size: 0.85rem;
-            line-height: 1.7;
-            color: rgba(255,255,255,0.4);
-        }
-
-        .footer-heading {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: rgba(255,255,255,0.6);
-            margin-bottom: 1rem;
-        }
-
-        .footer-links {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .footer-links a {
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.4);
-            transition: color var(--transition);
-        }
-
-        .footer-links a:hover {
-            color: var(--teal);
-        }
-
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 2rem auto 0;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .footer-copy {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.3);
-        }
-
-        .footer-uchicago {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.3);
-        }
-
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 1024px) {
-            .research-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
-            .section {
-                padding: 4rem 1.25rem;
-            }
-
-            .hero {
-                padding: 5rem 1.25rem 3rem;
-                min-height: 90vh;
-            }
-
-            .hero h1 {
-                font-size: 2.25rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1rem;
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .btn {
-                justify-content: center;
-            }
-
-            .team-grid {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            }
-
-            .join-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-inner {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .dna-helix {
-                display: none;
-            }
-
-            .hero-geo-1 {
-                width: 200px;
-                height: 200px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 1.85rem;
-            }
-
-            .section-title {
-                font-size: 1.75rem;
-            }
-
-            .team-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.75rem;
-            }
-
-            .team-card {
-                padding: 1.25rem;
-            }
-
-            .team-avatar {
-                width: 60px;
-                height: 60px;
-                font-size: 1.1rem;
-            }
-
-            .team-name {
-                font-size: 0.9rem;
-            }
-
-            .team-title {
-                font-size: 0.7rem;
-            }
-
-            .team-bio {
-                font-size: 0.8rem;
-            }
-
-            .research-card {
-                padding: 1.5rem;
-            }
-
-            .alumni-list {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ========== TEAM MODAL ========== */
-        .team-card {
-            cursor: pointer;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            padding: 2rem;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal-content {
-            background: var(--white);
-            max-width: 600px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-            transform: translateY(20px) scale(0.97);
-            transition: transform 0.3s ease;
-            border-top: 4px solid var(--teal);
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: translateY(0) scale(1);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            width: 36px;
-            height: 36px;
-            background: var(--gray-100);
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            transition: all var(--transition);
-            z-index: 1;
-        }
-
-        .modal-close:hover {
-            background: var(--navy);
-            color: #fff;
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            padding: 2rem 2rem 1.5rem;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .modal-avatar {
-            width: 120px;
-            height: 120px;
-            flex-shrink: 0;
-            overflow: hidden;
-            background: var(--gray-200);
-        }
-
-        .modal-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .modal-info h3 {
-            font-size: 1.35rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
-        }
-
-        .modal-info .modal-role {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--teal-dark);
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            margin-bottom: 0.35rem;
-        }
-
-        .modal-info .modal-joined {
-            font-size: 0.8rem;
-            color: var(--text-light);
-        }
-
-        .modal-body {
-            padding: 1.5rem 2rem 2rem;
-        }
-
-        .modal-body p {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            line-height: 1.8;
-        }
-
-        @media (max-width: 600px) {
-            .modal-header {
-                flex-direction: column;
-                text-align: center;
-                padding: 1.5rem;
-            }
-
-            .modal-avatar {
-                width: 100px;
-                height: 100px;
-            }
-
-            .modal-body {
-                padding: 1rem 1.5rem 1.5rem;
-            }
-        }
-
-        /* ========== SCROLLBAR ========== */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--navy);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--gray-600);
-            border-radius: 0px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--gray-500);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Li Lab — University of Chicago</title>
+<meta name="description" content="The Li Lab at the University of Chicago studies how genetic variation shapes RNA splicing and gene regulation, and how to modulate splicing with drugs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --paper: #f5f1e8;
+    --paper-2: #ece6d8;
+    --ink: #1c1814;
+    --ink-2: #4b443c;
+    --ink-3: #857b6f;
+    --rule: #d6cdbb;
+    --maroon: #800000;
+    --ochre: #b8761a;
+    --serif: 'Newsreader', Georgia, serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --gutter: clamp(16px, 4vw, 56px);
+    --max: 1240px;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --paper: #161311;
+        --paper-2: #201c19;
+        --ink: #efe8db;
+        --ink-2: #c3b9aa;
+        --ink-3: #8c8274;
+        --rule: #3a332d;
+        --maroon: #e0766c;
+        --ochre: #e0a54d;
+    }
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.6;
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+section[id] { scroll-margin-top: 64px; }
+::selection { background: var(--maroon); color: var(--paper); }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+.mono {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* ---------- Masthead ---------- */
+.masthead {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+}
+.masthead .wrap {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px; gap: 24px;
+}
+.wordmark {
+    text-decoration: none;
+    font-size: 22px; font-weight: 600; letter-spacing: -0.01em;
+    display: flex; align-items: baseline; gap: 12px;
+}
+.wordmark i { font-weight: 400; }
+.wordmark .mono { color: var(--ink-3); font-size: 11px; }
+.masthead nav { display: flex; gap: 28px; }
+.masthead nav a {
+    text-decoration: none; color: var(--ink-2);
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 4px 0; border-bottom: 1px solid transparent;
+}
+.masthead nav a:hover, .masthead nav a.on { color: var(--ink); border-bottom-color: var(--maroon); }
+.masthead nav a.join-link { color: var(--maroon); }
+
+/* ---------- Hero ---------- */
+.hero { padding: clamp(48px, 9vw, 120px) 0 0; }
+.hero-meta {
+    display: flex; flex-wrap: wrap; gap: 8px 32px;
+    color: var(--ink-3); margin-bottom: 32px;
+}
+.hero h1 {
+    font-weight: 380;
+    font-size: clamp(40px, 7.2vw, 104px);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    max-width: 14ch;
+}
+.hero h1 em { font-style: italic; color: var(--maroon); font-weight: 340; }
+.hero-lede {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+    margin-top: 40px;
+}
+.hero-lede p {
+    grid-column: 6 / span 6;
+    font-size: clamp(19px, 1.7vw, 22px);
+    color: var(--ink-2);
+    line-height: 1.5;
+}
+
+/* Fig. 1 — splicing diagram */
+.figure { margin-top: clamp(48px, 7vw, 88px); border-top: 1px solid var(--ink); }
+.figure svg { width: 100%; max-width: 520px; height: auto; display: block; overflow: visible; margin: 36px auto 20px; }
+.figure .exon { fill: var(--ink); }
+.figure .poison { fill: var(--maroon); }
+.figure .intron { stroke: var(--ink); stroke-width: 1.5; }
+.figure .arc { fill: none; stroke: var(--ink); stroke-linecap: round; }
+.figure .arc-u { stroke: var(--maroon); }
+.figure .lbl { font-family: var(--mono); font-size: 24px; fill: var(--ink-2); }
+.figure .lbl-u { fill: var(--maroon); }
+.figure .lbl-dim { fill: var(--ink-3); font-size: 20px; }
+.figure .gene { font-family: var(--serif); font-style: italic; font-size: 30px; fill: var(--ink); }
+.figure .axis { stroke: var(--rule); }
+.figure .draw {
+    stroke-dasharray: var(--len); stroke-dashoffset: var(--len);
+    animation: draw 1.4s cubic-bezier(.6,.1,.2,1) forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.figcaption {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+    padding: 20px 0 0; border-top: 1px solid var(--rule); margin-top: 12px;
+}
+.figcaption .mono { grid-column: 1 / span 3; color: var(--maroon); }
+.figcaption p { grid-column: 4 / span 7; font-size: 16px; color: var(--ink-2); }
+.figcaption p i { color: var(--ink); }
+
+/* ---------- Section scaffolding ---------- */
+.section { padding: clamp(80px, 11vw, 160px) 0 0; }
+.sec-head {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+    border-top: 1px solid var(--ink); padding-top: 18px; margin-bottom: clamp(40px, 6vw, 72px);
+}
+.sec-head .mono { grid-column: 1 / span 3; color: var(--ink-3); }
+.sec-head h2 {
+    grid-column: 4 / span 9;
+    font-weight: 380; font-size: clamp(32px, 4.4vw, 56px);
+    line-height: 1.05; letter-spacing: -0.025em;
+}
+.sec-head h2 em { color: var(--maroon); }
+
+/* ---------- Research ---------- */
+.themes { list-style: none; }
+.theme {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+    padding: 32px 0 40px; border-top: 1px solid var(--rule);
+}
+.theme:last-child { border-bottom: 1px solid var(--rule); }
+.theme .n {
+    grid-column: 1 / span 3;
+    font-size: clamp(48px, 6vw, 80px); line-height: 0.85; font-weight: 300;
+    color: var(--ink-3); font-variant-numeric: oldstyle-nums;
+}
+.theme h3 {
+    grid-column: 4 / span 4;
+    font-size: clamp(24px, 2.4vw, 30px); font-weight: 450; line-height: 1.15; letter-spacing: -0.01em;
+}
+.theme p { grid-column: 8 / span 5; color: var(--ink-2); font-size: 17px; }
+.theme .tools { display: block; margin-top: 14px; color: var(--ink-3); }
+.theme .tools a { color: var(--maroon); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+/* ---------- People ---------- */
+.pi {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+    margin-bottom: clamp(56px, 8vw, 96px);
+}
+.pi figure { grid-column: 1 / span 4; }
+.pi img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; filter: grayscale(1) contrast(1.05); }
+.pi-body { grid-column: 6 / span 7; align-self: end; }
+.pi-body .mono { color: var(--maroon); display: block; margin-bottom: 12px; }
+.pi-body h3 { font-size: clamp(32px, 3.6vw, 48px); font-weight: 400; letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 20px; }
+.pi-body p { color: var(--ink-2); font-size: 18px; max-width: 58ch; }
+.pi-body p + p { margin-top: 12px; }
+
+.people {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 48px 24px; list-style: none;
+}
+.person button {
+    all: unset; cursor: pointer; display: block; width: 100%;
+}
+.person button:focus-visible { outline: 2px solid var(--maroon); outline-offset: 6px; }
+.person .ph { display: block; overflow: hidden; background: var(--paper-2); aspect-ratio: 4 / 5; }
+.person img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(1) contrast(1.05);
+    transition: filter .4s ease, transform .6s ease;
+}
+.person button:hover img, .person button:focus-visible img { filter: grayscale(0); transform: scale(1.02); }
+.person .role { display: block; color: var(--ink-3); margin-top: 14px; }
+.person .name { display: block; font-size: 22px; font-weight: 450; line-height: 1.2; margin-top: 4px; letter-spacing: -0.01em; }
+.person .focus { display: block; font-style: italic; color: var(--ink-2); font-size: 16px; margin-top: 4px; }
+
+.alumni { margin-top: clamp(64px, 9vw, 112px); }
+.alumni summary {
+    list-style: none; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-top: 1px solid var(--ink); padding: 16px 0;
+}
+.alumni summary::-webkit-details-marker { display: none; }
+.alumni summary span:first-child { font-size: 26px; font-weight: 400; letter-spacing: -0.01em; }
+.alumni summary .mono { color: var(--maroon); }
+.alumni summary .mono::after { content: ' +'; }
+.alumni[open] summary .mono::after { content: ' −'; }
+.alumni table { width: 100%; border-collapse: collapse; font-size: 16px; }
+.alumni th {
+    text-align: left; font-family: var(--mono); font-weight: 400; font-size: 11px;
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-3);
+    padding: 10px 12px 10px 0; border-bottom: 1px solid var(--rule);
+}
+.alumni td { padding: 12px 12px 12px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.alumni td:first-child { font-weight: 500; }
+.alumni td.yrs { font-family: var(--mono); font-size: 13px; color: var(--ink-3); white-space: nowrap; }
+.alumni td.now { font-style: italic; color: var(--ink-2); }
+
+/* ---------- Publications ---------- */
+.pubs { border-bottom: 1px solid var(--rule); }
+.year {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+    border-top: 1px solid var(--rule); padding: 24px 0;
+}
+.year > h3 {
+    grid-column: 1 / span 3;
+    font-family: var(--mono); font-weight: 400; font-size: 14px; color: var(--ink-3);
+    position: sticky; top: 76px; align-self: start;
+}
+.year ol { grid-column: 4 / span 9; list-style: none; display: grid; gap: 24px; }
+.pub a.t {
+    text-decoration: none; font-size: 21px; line-height: 1.3; font-weight: 450; letter-spacing: -0.005em;
+    background-image: linear-gradient(var(--maroon), var(--maroon));
+    background-size: 0 1px; background-repeat: no-repeat; background-position: 0 100%;
+    transition: background-size .3s ease;
+}
+.pub a.t:hover { background-size: 100% 1px; color: var(--maroon); }
+.pub .au { display: block; font-size: 15px; color: var(--ink-2); margin-top: 4px; }
+.pub .au b { font-weight: 600; color: var(--ink); }
+.pub .j { display: inline-block; margin-top: 4px; font-style: italic; font-size: 15px; color: var(--ink); }
+.pub .pre { color: var(--ochre); margin-left: 8px; font-size: 11px; }
+.more { display: flex; justify-content: flex-end; padding-top: 20px; }
+.more a { color: var(--maroon); text-decoration: none; }
+.more a:hover { text-decoration: underline; }
+
+/* ---------- Join ---------- */
+.join-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+.join-intro strong { font-weight: 500; color: var(--ink); }
+.join-intro { grid-column: 4 / span 7; font-size: clamp(20px, 2vw, 24px); line-height: 1.45; color: var(--ink-2); }
+.positions { grid-column: 4 / span 9; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 48px; }
+.positions h3 { font-size: 24px; font-weight: 450; margin-bottom: 8px; }
+.positions p { color: var(--ink-2); font-size: 17px; }
+
+.pact {
+    grid-column: 1 / -1; margin-top: clamp(56px, 8vw, 96px);
+    display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--ink);
+}
+.pact > div { padding: 24px 32px 8px 0; }
+.pact > div + div { padding-left: 32px; border-left: 1px solid var(--rule); }
+.pact h4 { font-family: var(--mono); font-weight: 400; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--maroon); margin-bottom: 16px; }
+.pact ol { list-style: none; counter-reset: c; }
+.pact li {
+    counter-increment: c; display: grid; grid-template-columns: 36px 1fr;
+    padding: 10px 0; border-top: 1px solid var(--rule); font-size: 16px; color: var(--ink-2);
+}
+.pact li::before { content: counter(c, decimal-leading-zero); font-family: var(--mono); font-size: 12px; color: var(--ink-3); padding-top: 3px; }
+
+.write {
+    grid-column: 1 / -1; margin-top: clamp(56px, 8vw, 96px);
+    border-top: 1px solid var(--ink); padding-top: 24px;
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; align-items: end;
+}
+.write .mono { grid-column: 1 / span 3; color: var(--ink-3); align-self: start; padding-top: 10px; }
+.write a {
+    grid-column: 4 / span 9; text-decoration: none;
+    font-size: clamp(28px, 5.4vw, 72px); font-weight: 350; letter-spacing: -0.03em; line-height: 1;
+    word-break: break-word;
+}
+.write a span { color: var(--maroon); }
+.write a:hover { color: var(--maroon); }
+.write p { grid-column: 4 / span 7; color: var(--ink-2); font-size: 17px; }
+
+/* ---------- Footer ---------- */
+footer { margin-top: clamp(96px, 12vw, 160px); border-top: 1px solid var(--ink); padding: 28px 0 40px; }
+footer .wrap { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; font-size: 15px; color: var(--ink-2); }
+footer .f1 { grid-column: 1 / span 3; }
+footer .f1 strong { display: block; font-size: 20px; font-weight: 500; color: var(--ink); }
+footer .f2 { grid-column: 4 / span 4; }
+footer .f3 { grid-column: 8 / span 5; display: flex; flex-wrap: wrap; gap: 8px 24px; align-content: start; justify-content: flex-end; }
+footer .f3 a { text-decoration: none; font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+footer .f3 a:hover { color: var(--maroon); }
+
+/* ---------- Bio dialog ---------- */
+dialog {
+    border: none; padding: 0; margin: auto;
+    width: min(760px, calc(100vw - 32px)); max-height: calc(100vh - 48px);
+    background: var(--paper); color: var(--ink);
+    box-shadow: 0 0 0 1px var(--ink);
+}
+dialog::backdrop { background: rgba(20, 16, 12, 0.55); }
+.dlg { display: grid; grid-template-columns: 220px 1fr; }
+.dlg img { width: 100%; height: 100%; object-fit: cover; min-height: 280px; }
+.dlg-body { padding: 28px 32px 32px; position: relative; }
+.dlg-body .mono { color: var(--maroon); display: block; }
+.dlg-body h3 { font-size: 32px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.1; margin: 8px 0 4px; }
+.dlg-body .joined { color: var(--ink-3); margin-bottom: 20px; display: block; }
+.dlg-body p { font-size: 17px; color: var(--ink-2); }
+.dlg-close {
+    position: absolute; top: 12px; right: 12px;
+    background: none; border: 1px solid var(--rule); color: var(--ink);
+    width: 36px; height: 36px; font-size: 20px; line-height: 1; cursor: pointer;
+}
+.dlg-close:hover { border-color: var(--ink); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+    .positions { grid-column: 1 / -1; }
+    .people { grid-template-columns: repeat(3, 1fr); }
+    .theme h3 { grid-column: 4 / -1; }
+    .theme p { grid-column: 4 / -1; }
+}
+@media (max-width: 720px) {
+    body { font-size: 17px; }
+    .masthead nav { gap: 16px; }
+    .masthead nav a:not(.join-link):not(.keep) { display: none; }
+    .wordmark .mono { display: none; }
+    .hero-lede p, .figcaption .mono, .figcaption p, .sec-head .mono, .sec-head h2,
+    .theme .n, .theme h3, .theme p, .pi figure, .pi-body, .year > h3, .year ol,
+    .join-intro, .positions, .write .mono, .write a, .write p,
+    footer .f1, footer .f2, footer .f3 { grid-column: 1 / -1; }
+    .figcaption, .sec-head, .theme, .pi, .year, .write { gap: 12px; }
+    .theme .n { font-size: 40px; }
+    .pi figure { max-width: 320px; }
+    .people { grid-template-columns: repeat(2, 1fr); gap: 32px 16px; }
+    .person .name { font-size: 19px; }
+    .person .focus { font-size: 15px; }
+    .year > h3 { position: static; }
+    .positions { grid-template-columns: 1fr; gap: 28px; }
+    .pact { grid-template-columns: 1fr; }
+    .pact > div, .pact > div + div { padding: 24px 0 8px; border-left: none; }
+    .pact > div + div { border-top: 1px solid var(--rule); }
+    .alumni thead { display: none; }
+    .alumni tr { display: grid; grid-template-columns: 1fr auto; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+    .alumni td { border: none; padding: 0; }
+    .alumni td.role, .alumni td.now { grid-column: 1 / -1; font-size: 15px; }
+    footer .f3 { justify-content: flex-start; }
+    .dlg { grid-template-columns: 1fr; }
+    .dlg img { height: 260px; min-height: 0; object-position: center 25%; }
+    .figure svg { max-width: none; margin: 28px 0 16px; }
+    .figure .lbl { font-size: 34px; }
+    .figure .wide-only { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .figure .draw { animation: none; stroke-dashoffset: 0; }
+    .person img { transition: none; }
+}
+</style>
 </head>
 <body>
 
-    <!-- ========== NAVIGATION ========== -->
-    <nav class="navbar" id="navbar">
-        <div class="navbar-inner">
-            <a href="#" class="nav-brand">
-                <span class="nav-brand-name">The Li Lab</span>
-                <span class="nav-brand-sub">University of Chicago</span>
-            </a>
+<header class="masthead">
+    <div class="wrap">
+        <a class="wordmark" href="#top">Li <i>Lab</i> <span class="mono">Genetic Medicine · UChicago</span></a>
+        <nav aria-label="Sections">
+            <a href="#research">Research</a>
+            <a href="#people">People</a>
+            <a href="#papers" class="keep">Papers</a>
+            <a href="#join" class="join-link">Join</a>
+        </nav>
+    </div>
+</header>
 
-            <ul class="nav-links">
-                <li><a href="#research">Research</a></li>
-                <li><a href="#team">Team</a></li>
-                <li><a href="#publications">Publications</a></li>
-                <li><a href="#join" class="nav-cta">Join Us</a></li>
+<main id="top">
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+    <div class="wrap">
+        <div class="hero-meta mono">
+            <span>Section of Genetic Medicine</span>
+            <span>Department of Medicine</span>
+            <span>University of Chicago</span>
+        </div>
+        <h1>How variation <em>rewrites</em> RNA, and how we can rewrite it back.</h1>
+        <div class="hero-lede">
+            <p>We use computation and genomics to understand how genetic variation shapes gene regulation, with RNA splicing at the centre, and we study small molecules that reshape splicing as drugs.</p>
+        </div>
+
+        <figure class="figure" aria-label="Diagram of SCN1A exons 19 to 22 with poison exon 20N and its splice junctions">
+            <svg viewBox="0 -40 1200 330" aria-hidden="true">
+                <!-- productive junction arcs (above) -->
+                <path class="arc draw" style="--len:260;animation-delay:.2s" stroke-width="7" d="M150 120 C 180 20, 270 20, 300 120"/>
+                <path class="arc draw" style="--len:460;animation-delay:.45s" stroke-width="6" d="M390 120 C 450 -40, 640 -40, 700 120"/>
+                <path class="arc draw" style="--len:240;animation-delay:.7s" stroke-width="7" d="M810 120 C 840 30, 920 30, 950 120"/>
+                <text class="lbl" x="545" y="-12" text-anchor="middle">productive</text>
+
+                <!-- intron backbone + exons -->
+                <line class="intron" x1="40" y1="138" x2="1160" y2="138"/>
+                <rect class="exon" x="40"  y="120" width="110" height="36"/>
+                <rect class="exon" x="300" y="120" width="90"  height="36"/>
+                <rect class="poison" x="520" y="120" width="50" height="36"/>
+                <rect class="exon" x="700" y="120" width="110" height="36"/>
+                <rect class="exon" x="950" y="120" width="210" height="36"/>
+                <text class="lbl lbl-dim" x="95"   y="196" text-anchor="middle">19</text>
+                <text class="lbl lbl-dim" x="345"  y="196" text-anchor="middle">20</text>
+                <text class="lbl lbl-u"   x="545"  y="104" text-anchor="middle">20N</text>
+                <text class="lbl lbl-dim" x="755"  y="196" text-anchor="middle">21</text>
+                <text class="lbl lbl-dim" x="1055" y="196" text-anchor="middle">22</text>
+
+                <!-- unproductive junction arcs (below) -->
+                <path class="arc arc-u draw" style="--len:200;animation-delay:1.1s" stroke-width="2.5" d="M390 156 C 420 230, 490 230, 520 156"/>
+                <path class="arc arc-u draw" style="--len:200;animation-delay:1.3s" stroke-width="2.5" d="M570 156 C 600 230, 670 230, 700 156"/>
+
+                <text class="lbl gene" x="40" y="282">SCN1A</text>
+                <text class="lbl lbl-u" x="545" y="282" text-anchor="middle">unproductive → NMD</text>
+                <text class="lbl lbl-dim wide-only" x="1160" y="282" text-anchor="end">exons 19–22 · not to scale</text>
+            </svg>
+            <figcaption class="figcaption">
+                <span class="mono">Fig. 1 — A poison exon in <i>SCN1A</i></span>
+                <p>Most <i>SCN1A</i> transcripts skip exon 20N. Including it introduces a premature stop codon, and the transcript is destroyed by nonsense-mediated decay. Variants that raise 20N inclusion cause Dravet syndrome and related epilepsies, and antisense drugs that block it are in clinical trials to restore the channel. Across thousands of genes, unproductive splicing like this helps set expression levels.</p>
+            </figcaption>
+        </figure>
+    </div>
+</section>
+
+<!-- ========== RESEARCH ========== -->
+<section class="section" id="research">
+    <div class="wrap">
+        <div class="sec-head">
+            <span class="mono">§1 Research</span>
+            <h2>Three directions, one molecule: <em>pre-mRNA.</em></h2>
+        </div>
+        <ol class="themes">
+            <li class="theme">
+                <span class="n">i.</span>
+                <h3>Mechanisms of gene regulation</h3>
+                <p>How does genetic information flow through the regulatory cascade, from chromatin to RNA to protein? We use population-scale genomic data to map the molecular mechanisms that control gene expression across cell types and contexts.
+                    <span class="tools mono">Key papers: <a href="https://www.science.org/doi/10.1126/science.aad9417" target="_blank" rel="noopener">Splicing</a> (Science 2016) · <a href="https://elifesciences.org/articles/57492" target="_blank" rel="noopener">APA</a> (eLife 2020) · <a href="https://www.nature.com/articles/s41588-024-01872-x" target="_blank" rel="noopener">AS-NMD</a> (Nat Genet 2024)</span>
+                </p>
+            </li>
+            <li class="theme">
+                <span class="n">ii.</span>
+                <h3>RNA splicing in disease</h3>
+                <p>We link genetic variants to complex traits, from Alzheimer's disease to autoimmune conditions, with particular attention to splicing as the mechanism that carries disease risk.
+                    <span class="tools mono">Tools: <a href="https://www.nature.com/articles/s41588-017-0004-9" target="_blank" rel="noopener">LeafCutter</a> · <a href="https://www.biorxiv.org/content/10.1101/2025.04.06.646893v1" target="_blank" rel="noopener">LeafCutter2</a> ·<a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-022-02664-4" target="_blank" rel="noopener">Pangolin</a></span>
+                </p>
+            </li>
+            <li class="theme">
+                <span class="n">iii.</span>
+                <h3>Drugging RNA splicing</h3>
+                <p>We study how splice-switching small molecules act on the transcriptome and explore their use as therapeutics: new ways to raise or lower expression of disease genes in the tissues and cell types that matter.
+                    <span class="tools mono">Key papers: <a href="https://www.biorxiv.org/content/10.64898/2026.06.26.734742v1.abstract" target="_blank" rel="noopener">Depleting prion protein with splice-switching small molecules</a> (bioRxiv 2026)</span>
+                </p>
+            </li>
+        </ol>
+    </div>
+</section>
+
+<!-- ========== PEOPLE ========== -->
+<section class="section" id="people">
+    <div class="wrap">
+        <div class="sec-head">
+            <span class="mono">§2 People</span>
+            <h2>The lab, as of 2026.</h2>
+        </div>
+
+        <div class="pi">
+            <figure><img src="photos/yang.jpg" alt="Portrait of Yang I Li"></figure>
+            <div class="pi-body">
+                <span class="mono">Principal Investigator · since Oct 2017</span>
+                <h3>Yang I Li, DPhil</h3>
+                <p>Yang is an Associate Professor in the Section of Genetic Medicine. He grew up in China, Belgium, and Canada. He obtained a B.Sc. in Mathematics and Computer Science from McGill University (2009), a M.Phil. in Biological Sciences from the University of Liverpool (2010), and a D.Phil. in evolutionary genomics from the University of Oxford (2014). He worked with Jonathan Pritchard at Stanford before moving to UChicago in 2017.</p>
+                <p>Outside lab he likes to hike, rock climb, cook, and travel.</p>
+            </div>
+        </div>
+
+        <ul class="people">
+            <li class="person"><button type="button" data-photo="photos/jimmy.jpg" data-name="Jimmy Elias, PhD" data-role="Postdoctoral Fellow" data-joined="June 2025" data-bio="Jimmy is a postdoc in the lab. He grew up in New Jersey then got a B.S. in Biomedical Engineering from Johns Hopkins University. He then earned his PhD at the University of Chicago in Alex Ruthenburg's lab. Outside of lab he loves playing sports (soccer, tennis, volleyball), biking, and hiking.">
+                <span class="ph"><img src="photos/jimmy.jpg" alt="" loading="lazy"></span>
+                <span class="role mono">Postdoc</span>
+                <span class="name">Jimmy Elias</span>
+                <span class="focus">Kinetics of RNA splicing</span>
+            </button></li>
+            <li class="person"><button type="button" data-photo="photos/connor.jpeg" data-name="Connor Kenny, PhD" data-role="Postdoctoral Fellow" data-joined="September 2025" data-bio="Connor is a postdoc in the lab. He grew up in New Jersey and earned his BA in Neuroscience from Boston University. He stayed in Boston to work in Christopher A. Walsh's lab at Boston Children's Hospital, then went on to complete his PhD in Chris Burge's lab at MIT. Outside the lab, Connor enjoys traveling and works part-time at a local Chicago glass-blowing studio.">
+                <span class="ph"><img src="photos/connor.jpeg" alt="" loading="lazy"></span>
+                <span class="role mono">Postdoc</span>
+                <span class="name">Connor Kenny</span>
+                <span class="focus">Mechanistic models of RNA splicing</span>
+            </button></li>
+            <li class="person"><button type="button" data-photo="photos/dylan.png" data-name="Dylan Stermer, B.Sc." data-role="PhD Student · GGSB" data-joined="August 2023" data-bio="Dylan is a PhD student in the Committee on Genetics, Genomics, and Systems Biology at UChicago. He grew up in Montreal and obtained a B.Sc in Pharmacology and Therapeutics from McGill University. In addition to his scientific interests Dylan is an international competitive sailor, and enjoys reading, camping and playing bass &amp; guitar.">
+                <span class="ph"><img src="photos/dylan.png" alt="" loading="lazy"></span>
+                <span class="role mono">PhD · GGSB</span>
+                <span class="name">Dylan Stermer</span>
+                <span class="focus">Genetics, Genomics &amp; Systems Biology</span>
+            </button></li>
+            <li class="person"><button type="button" data-photo="photos/quinn.jpg" data-name="Quinn Hauck, B.Sc." data-role="PhD Student · Human Genetics" data-joined="July 2024" data-bio="Quinn is a PhD student in Human Genetics. He grew up in Seattle and graduated with a B.Sc. in Biomedical Engineering from Johns Hopkins University. Outside of lab, he plays ultimate frisbee and enjoys watching baseball, hiking and traveling.">
+                <span class="ph"><img src="photos/quinn.jpg" alt="" loading="lazy"></span>
+                <span class="role mono">PhD · Human Genetics</span>
+                <span class="name">Quinn Hauck</span>
+                <span class="focus">Department of Human Genetics</span>
+            </button></li>
+            <li class="person"><button type="button" data-photo="photos/hao.jpg" data-name="Hao Yu, B.S." data-role="PhD Student · GGSB" data-joined="August 2023" data-bio="Hao Yu is a PhD student in GGSB who joined the lab in 2025. Hao earned a M.S. in computer science at UChicago and a B.S. in Biochemistry at the University of Hong Kong. Hao is interested in applying computational technologies to solve biological problems. Outside the lab, he enjoys riding, paddling and jogging.">
+                <span class="ph"><img src="photos/hao.jpg" alt="" loading="lazy"></span>
+                <span class="role mono">PhD · GGSB</span>
+                <span class="name">Hao Yu</span>
+                <span class="focus">Genetics, Genomics &amp; Systems Biology</span>
+            </button></li>
+            <li class="person"><button type="button" data-photo="photos/fiona.jpg" data-name="Fiona, B.S." data-role="PhD Student · GGSB" data-bio="Fiona is a PhD student in GGSB jointly advised by Jon Staley. She grew up in Minneapolis and graduated from the University of Wisconsin-Madison with a B.S. in Genetics and Genomics, and Chemistry. Outside of lab, she enjoys hiking, reading by the lake in her hammock, and learning new crafts.">
+                <span class="ph"><img src="photos/fiona.jpg" alt="" loading="lazy"></span>
+                <span class="role mono">PhD · GGSB</span>
+                <span class="name">Fiona</span>
+                <span class="focus">Co-advised with Jon Staley</span>
+            </button></li>
             </ul>
 
-            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Mobile nav -->
-    <div class="mobile-nav" id="mobileNav">
-        <a href="#research" class="mobile-nav-link">Research</a>
-        <a href="#team" class="mobile-nav-link">Team</a>
-        <a href="#publications" class="mobile-nav-link">Publications</a>
-        <a href="#join" class="mobile-nav-link">Join Us</a>
+        <details class="alumni">
+            <summary><span>Alumni</span><span class="mono">16 people</span></summary>
+            <table>
+                <thead><tr><th>Name</th><th>Role</th><th>Years</th><th>Now</th></tr></thead>
+                <tbody>
+                    <tr><td>Ben Fair, PhD</td><td class="role">Postdoc, then Staff Scientist</td><td class="yrs">2018–2026</td><td class="now">Staff Scientist, Hastings Lab, University of Michigan (from Nov 2026); ongoing collaborator</td></tr>
+                    <tr><td>Sara Fritz, B.S.</td><td class="role">Research Lab Technician</td><td class="yrs">2024–2026</td><td class="now">Research Technician, Ober Lab</td></tr>
+                    <tr><td>Carlos Buen Abad, PhD</td><td class="role">Postdoc</td><td class="yrs">2021–2026</td><td class="now">Assistant Professor, Clemson University</td></tr>
+                    <tr><td>Fabio Morgante, PhD</td><td class="role">Postdoc</td><td class="yrs">2018–2020</td><td class="now">Assistant Professor, Clemson University</td></tr>
+                    <tr><td>Phoenix (Zepeng) Mu, B.S.</td><td class="role">PhD Student</td><td class="yrs">2019–2024</td><td class="now">Postdoc, Harvard</td></tr>
+                    <tr><td>Ankeeta Shah, B.A.</td><td class="role">PhD Student</td><td class="yrs">2018–2023</td><td class="now">Piper Sandler</td></tr>
+                    <tr><td>Chao Dai, B.S.</td><td class="role">PhD Student</td><td class="yrs">2021–2025</td><td class="now"></td></tr>
+                    <tr><td>Gabriela Mossian, B.A.</td><td class="role">Lab Technician</td><td class="yrs">2021–2023</td><td class="now"></td></tr>
+                    <tr><td>Eric Chen, B.S.</td><td class="role">Research Assistant</td><td class="yrs">2021–2023</td><td class="now">PhD student, Harvard</td></tr>
+                    <tr><td>Yi Zeng, PhD</td><td class="role">Postdoc</td><td class="yrs">2021–2022</td><td class="now">Assistant Professor, University of Colorado Boulder</td></tr>
+                    <tr><td>Austin Reilley</td><td class="role">Lab Technician</td><td class="yrs">2020–2021</td><td class="now"></td></tr>
+                    <tr><td>Stephanie Lozano, B.S.</td><td class="role">Lab Technician</td><td class="yrs">2018–2020</td><td class="now">UC Davis Neuroscience</td></tr>
+                    <tr><td>Tony Zeng, B.S.</td><td class="role">Undergraduate</td><td class="yrs">2018–2021</td><td class="now">PhD student, Stanford Genetics</td></tr>
+                    <tr><td>Shane Warland</td><td class="role">Undergraduate</td><td class="yrs">2018–2021</td><td class="now">PhD student, Cornell</td></tr>
+                    <tr><td>Henry Bloom</td><td class="role">Undergraduate</td><td class="yrs">2022–2024</td><td class="now"></td></tr>
+                    <tr><td>Alex Williams</td><td class="role">Undergraduate</td><td class="yrs">2023–2024</td><td class="now"></td></tr>
+                </tbody>
+            </table>
+        </details>
     </div>
+</section>
 
-    <!-- ========== HERO ========== -->
-    <section class="hero" id="hero">
-        <div class="hero-bg">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
+<!-- ========== PUBLICATIONS ========== -->
+<section class="section" id="papers">
+    <div class="wrap">
+        <div class="sec-head">
+            <span class="mono">§3 Selected papers</span>
+            <h2>A decade of work on splicing, regulation, and complex traits.</h2>
         </div>
 
-        <div class="hero-grid"></div>
+        <div class="pubs">
+            <div class="year"><h3>2026</h3><ol>
+                <li class="pub"><a class="t" href="https://www.biorxiv.org/content/10.64898/2026.06.26.734742v1.abstract" target="_blank" rel="noopener">Depleting prion protein using splice-switching small molecules</a><span class="au">Liu B, Fair B, Kuang Z, Tang Z, Zhao J, Zhou L, Kong Q, Solanki A, Kenny C, Mastrianni JA, Zhao R, <b>Li YI</b>, Wang J</span><span class="j">bioRxiv</span><span class="pre mono">Preprint</span></li>
+                <li class="pub"><a class="t" href="https://www.cell.com/cell-genomics/fulltext/S2666-979X(25)00317-9" target="_blank" rel="noopener">Impact of disease-associated chromatin accessibility QTLs across immune cell types and contexts</a><span class="au">Mu Z, Randolph HE, Aguirre-Gamboa R, Ketter E, Dumaine A, Locher V, et al.</span><span class="j">Cell Genomics</span></li>
+                <li class="pub"><a class="t" href="https://www.nature.com/articles/s41588-025-02449-y" target="_blank" rel="noopener">Protein–protein interactions shape <i>trans</i>-regulatory impact of genetic variation on protein expression and complex traits</a><span class="au">Li J, <b>Li YI</b>, Liu X</span><span class="j">Nature Genetics</span></li>
+            </ol></div>
+            <div class="year"><h3>2025</h3><ol>
+                <li class="pub"><a class="t" href="https://www.medrxiv.org/content/10.1101/2025.04.17.25326042v1" target="_blank" rel="noopener">Integrative multi-omics QTL colocalization maps regulatory architecture in aging human brain</a><span class="au">Cao X, Sun H, Feng R, Mazumder R, Buen Abad Najar CF, <b>Li YI</b>, et al.</span><span class="j">medRxiv</span><span class="pre mono">Preprint</span></li>
+                <li class="pub"><a class="t" href="https://www.biorxiv.org/content/10.1101/2025.04.06.646893v1" target="_blank" rel="noopener">Genetic and functional analysis of unproductive splicing using LeafCutter2</a><span class="au">Buen Abad Najar CF, Feng R, Dai C, Fair B, Hauck Q, Li J, Cao X, Dey KK, et al.</span><span class="j">bioRxiv</span><span class="pre mono">Preprint</span></li>
+            </ol></div>
+            <div class="year"><h3>2024</h3><ol>
+                <li class="pub"><a class="t" href="https://www.nature.com/articles/s41588-024-01872-x" target="_blank" rel="noopener">Global impact of unproductive splicing on human gene expression levels</a><span class="au">Fair BJ, Buen Abad Najar CF, Zhao J, Lozano S, Reilly A, Mossian G, Staley JP, Wang J, <b>Li YI</b></span><span class="j">Nature Genetics</span></li>
+                <li class="pub"><a class="t" href="https://www.cell.com/cell/abstract/S0092-8674(24)00060-6" target="_blank" rel="noopener">Genetic and molecular architecture of complex traits</a><span class="au">Lappalainen T, <b>Li YI</b>, Ramachandran S, Gusev A</span><span class="j">Cell</span></li>
+                <li class="pub"><a class="t" href="https://www.nature.com/articles/s41588-024-01668-z" target="_blank" rel="noopener">Epigenetic variation impacts individual differences in the transcriptional response to influenza infection</a><span class="au">Aracena K et al.</span><span class="j">Nature Genetics</span></li>
+            </ol></div>
+            <div class="year"><h3>2023</h3><ol>
+                <li class="pub"><a class="t" href="https://www.nature.com/articles/s41588-023-01306-0" target="_blank" rel="noopener">Genetics of sexually dimorphic adipose distribution in humans</a><span class="au">Hansen GT et al.</span><span class="j">Nature Genetics</span></li>
+                <li class="pub"><a class="t" href="https://www.nature.com/articles/s43586-022-00188-6" target="_blank" rel="noopener">Molecular quantitative trait loci</a><span class="au">Aguet F, Alasoo K, <b>Li YI</b>, Battle A, Im HK, Montgomery SB, Lappalainen T</span><span class="j">Nature Reviews Methods Primers</span></li>
+            </ol></div>
+            <div class="year"><h3>2022</h3><ol>
+                <li class="pub"><a class="t" href="https://www.sciencedirect.com/science/article/abs/pii/S1097276522010668" target="_blank" rel="noopener">Profiling lariat intermediates reveals genetic determinants of early and late co-transcriptional splicing</a><span class="au">Zeng Y, Fair BJ, Zeng H, Krishnamohan A, Hou Y, Hall JM, Ruthenburg AJ, <b>Li YI*</b>, Staley JP*</span><span class="j">Molecular Cell</span></li>
+                <li class="pub"><a class="t" href="https://www.nature.com/articles/s41586-022-05052-x" target="_blank" rel="noopener">RNA editing underlies genetic risk of common inflammatory diseases</a><span class="au">Li Q et al.</span><span class="j">Nature</span></li>
+                <li class="pub"><a class="t" href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-022-02664-4" target="_blank" rel="noopener">Predicting RNA splicing from DNA sequence using Pangolin</a><span class="au">Zeng T, <b>Li YI</b></span><span class="j">Genome Biology</span></li>
+            </ol></div>
+            <div class="year"><h3>2021</h3><ol>
+                <li class="pub"><a class="t" href="https://www.science.org/doi/full/10.1126/science.abf7117" target="_blank" rel="noopener">Haplotype-resolved diverse human genomes and integrated analysis of structural variation</a><span class="au">Ebert et al.</span><span class="j">Science</span></li>
+                <li class="pub"><a class="t" href="https://link.springer.com/article/10.1186/s13059-021-02502-z" target="_blank" rel="noopener">Benchmarking sequencing methods and tools that facilitate the study of alternative polyadenylation</a><span class="au">Shah A, Mittleman B, Gilad Y, <b>Li YI</b></span><span class="j">Genome Biology</span></li>
+                <li class="pub"><a class="t" href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02334-x" target="_blank" rel="noopener">Impact of cell-type and context-dependent regulatory variants on human immune traits</a><span class="au">Mu Z, Wei W, Fair B, Miao J, Zhu P*, <b>Li YI*</b></span><span class="j">Genome Biology</span></li>
+                <li class="pub"><a class="t" href="https://genome.cshlp.org/content/31/4/698" target="_blank" rel="noopener">Alignment of single-cell RNA-seq samples without over-correction using kernel density matching</a><span class="au">Chen M, Zhan Q, Mu Z, Wang L, Zheng Z, Miao J, Zhu P*, <b>Li YI*</b></span><span class="j">Genome Research</span></li>
+            </ol></div>
+            <div class="year"><h3>2020</h3><ol>
+                <li class="pub"><a class="t" href="https://elifesciences.org/articles/57492" target="_blank" rel="noopener">Alternative polyadenylation mediates genetic regulation of gene expression</a><span class="au">Mittleman B, Pott S, Warland S, Zeng T, Mu Z, Kaur M, Gilad Y, <b>Li YI</b></span><span class="j">eLife</span></li>
+            </ol></div>
+            <div class="year"><h3>2019</h3><ol>
+                <li class="pub"><a class="t" href="https://www.sciencedirect.com/science/article/pii/S0092867419304003" target="_blank" rel="noopener">Trans effects on gene expression can drive omnigenic inheritance</a><span class="au">Liu X*, <b>Li YI*</b>, Pritchard JK*</span><span class="j">Cell</span></li>
+                <li class="pub"><a class="t" href="https://www.nature.com/articles/s41467-019-08912-9" target="_blank" rel="noopener">Prioritizing Parkinson's Disease genes using population-scale transcriptomic data</a><span class="au"><b>Li YI*</b>, Wong G*, et al.</span><span class="j">Nature Communications</span></li>
+            </ol></div>
+            <div class="year"><h3>2018</h3><ol>
+                <li class="pub"><a class="t" href="https://www.nature.com/articles/s41588-017-0004-9" target="_blank" rel="noopener">Annotation-free quantification of RNA splicing using LeafCutter</a><span class="au"><b>Li YI*</b>, Knowles DA*, Humphrey J, Barbeira AN, Dickinson SP, Im HK, Pritchard JK</span><span class="j">Nature Genetics</span></li>
+            </ol></div>
+            <div class="year"><h3>2017</h3><ol>
+                <li class="pub"><a class="t" href="https://www.cell.com/cell/fulltext/S0092-8674(17)30629-3" target="_blank" rel="noopener">An expanded view of complex traits: from polygenic to omnigenic</a><span class="au">Boyle EA*, <b>Li YI*</b>, Pritchard JK*</span><span class="j">Cell</span></li>
+            </ol></div>
+            <div class="year"><h3>2016</h3><ol>
+                <li class="pub"><a class="t" href="https://www.science.org/doi/10.1126/science.aad9417" target="_blank" rel="noopener">RNA splicing is a primary link between genetic variation and disease</a><span class="au"><b>Li YI</b>, van de Geijn B, Raj A, Knowles DA, Petti A, Golan D, Gilad Y, Pritchard JK</span><span class="j">Science</span></li>
+            </ol></div>
+        </div>
+        <div class="more"><a class="mono" href="http://scholar.google.com/citations?user=d18UeLEAAAAJ&amp;hl=en" target="_blank" rel="noopener">Full list on Google Scholar ↗</a></div>
+    </div>
+</section>
 
-        <div class="hero-geo hero-geo-1"></div>
-        <div class="hero-geo hero-geo-2"></div>
-        <div class="hero-geo hero-geo-3"></div>
-
-        <!-- DNA helix decoration -->
-        <div class="dna-helix">
-            <svg viewBox="0 0 200 600" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
-                <!-- Left strand -->
-                <g opacity="0.6">
-                    <circle cx="60" cy="30" r="4" fill="#ffa319">
-                        <animate attributeName="cx" values="60;140;60" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="140" cy="80" r="4" fill="#ffa319">
-                        <animate attributeName="cx" values="140;60;140" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="60" cy="130" r="4" fill="#ffa319">
-                        <animate attributeName="cx" values="60;140;60" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="140" cy="180" r="4" fill="#ffa319">
-                        <animate attributeName="cx" values="140;60;140" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="60" cy="230" r="4" fill="#ffa319">
-                        <animate attributeName="cx" values="60;140;60" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="140" cy="280" r="4" fill="#ffa319">
-                        <animate attributeName="cx" values="140;60;140" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="60" cy="330" r="4" fill="#ffa319">
-                        <animate attributeName="cx" values="60;140;60" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="140" cy="380" r="4" fill="#ffa319">
-                        <animate attributeName="cx" values="140;60;140" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="60" cy="430" r="4" fill="#ffa319">
-                        <animate attributeName="cx" values="60;140;60" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="140" cy="480" r="4" fill="#ffa319">
-                        <animate attributeName="cx" values="140;60;140" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="60" cy="530" r="4" fill="#ffa319">
-                        <animate attributeName="cx" values="60;140;60" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="140" cy="580" r="4" fill="#ffa319">
-                        <animate attributeName="cx" values="140;60;140" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                </g>
-                <!-- Right strand -->
-                <g opacity="0.4">
-                    <circle cx="140" cy="30" r="3" fill="#ffd470">
-                        <animate attributeName="cx" values="140;60;140" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="60" cy="80" r="3" fill="#ffd470">
-                        <animate attributeName="cx" values="60;140;60" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="140" cy="130" r="3" fill="#ffd470">
-                        <animate attributeName="cx" values="140;60;140" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="60" cy="180" r="3" fill="#ffd470">
-                        <animate attributeName="cx" values="60;140;60" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="140" cy="230" r="3" fill="#ffd470">
-                        <animate attributeName="cx" values="140;60;140" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="60" cy="280" r="3" fill="#ffd470">
-                        <animate attributeName="cx" values="60;140;60" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="140" cy="330" r="3" fill="#ffd470">
-                        <animate attributeName="cx" values="140;60;140" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="60" cy="380" r="3" fill="#ffd470">
-                        <animate attributeName="cx" values="60;140;60" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="140" cy="430" r="3" fill="#ffd470">
-                        <animate attributeName="cx" values="140;60;140" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="60" cy="480" r="3" fill="#ffd470">
-                        <animate attributeName="cx" values="60;140;60" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="140" cy="530" r="3" fill="#ffd470">
-                        <animate attributeName="cx" values="140;60;140" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="60" cy="580" r="3" fill="#ffd470">
-                        <animate attributeName="cx" values="60;140;60" dur="6s" repeatCount="indefinite"/>
-                    </circle>
-                </g>
-                <!-- Connecting rungs -->
-                <g opacity="0.15">
-                    <line x1="60" y1="30" x2="140" y2="30" stroke="#ffa319" stroke-width="1"/>
-                    <line x1="60" y1="80" x2="140" y2="80" stroke="#ffa319" stroke-width="1"/>
-                    <line x1="60" y1="130" x2="140" y2="130" stroke="#ffa319" stroke-width="1"/>
-                    <line x1="60" y1="180" x2="140" y2="180" stroke="#ffa319" stroke-width="1"/>
-                    <line x1="60" y1="230" x2="140" y2="230" stroke="#ffa319" stroke-width="1"/>
-                    <line x1="60" y1="280" x2="140" y2="280" stroke="#ffa319" stroke-width="1"/>
-                    <line x1="60" y1="330" x2="140" y2="330" stroke="#ffa319" stroke-width="1"/>
-                    <line x1="60" y1="380" x2="140" y2="380" stroke="#ffa319" stroke-width="1"/>
-                    <line x1="60" y1="430" x2="140" y2="430" stroke="#ffa319" stroke-width="1"/>
-                    <line x1="60" y1="480" x2="140" y2="480" stroke="#ffa319" stroke-width="1"/>
-                    <line x1="60" y1="530" x2="140" y2="530" stroke="#ffa319" stroke-width="1"/>
-                    <line x1="60" y1="580" x2="140" y2="580" stroke="#ffa319" stroke-width="1"/>
-                </g>
-            </svg>
+<!-- ========== JOIN ========== -->
+<section class="section" id="join">
+    <div class="wrap">
+        <div class="sec-head">
+            <span class="mono">§4 Join</span>
+            <h2>We want people who can <em>design the experiment</em>, not just analyze it.</h2>
         </div>
 
-        <div class="hero-gradient-overlay"></div>
+        <div class="join-grid">
+            <p class="join-intro">We're building a loop between computation, experiment, and the clinic: models that propose splicing interventions, experiments that test them, and the patients with rare splice variants they're for. We're especially looking for people who want to work across that loop. <strong>We always have funding for exceptional applicants.</strong></p>
 
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                University of Chicago &middot; Section of Genetic Medicine
-            </div>
-            <h1>Deciphering the <span>Genetic Basis</span> of Human Disease</h1>
-            <p class="hero-subtitle">We use computational approaches and genomics to study gene regulation, RNA splicing, and how to modulate it using drugs.</p>
-            <div class="hero-buttons">
-                <a href="#research" class="btn btn-primary">
-                    Explore Our Research
-                    <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-                <a href="#join" class="btn btn-secondary">
-                    Join Our Team
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== RESEARCH ========== -->
-    <section class="section research" id="research">
-        <div class="section-inner">
-            <div class="section-header reveal">
-                <span class="section-label">Research</span>
-                <h2 class="section-title">Understanding Gene Regulation<br>at Scale</h2>
-                <p class="section-desc">Our lab integrates computational biology, statistical genetics, and experimental genomics to understand how genetic variation shapes gene regulation and contributes to human disease.</p>
-            </div>
-
-            <div class="research-grid">
-                <!-- Card 1 -->
-                <div class="research-card reveal reveal-delay-1">
-                    <div class="research-icon research-icon-1">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                            <path d="M2 17l10 5 10-5"/>
-                            <path d="M2 12l10 5 10-5"/>
-                        </svg>
-                    </div>
-                    <h3>Mechanisms of Gene Regulation</h3>
-                    <p>We study how genetic information flows through the regulatory cascade from chromatin to protein, using large-scale genomic data to identify the molecular mechanisms controlling gene expression in diverse cellular contexts.</p>
+            <div class="positions">
+                <div>
+                    <h3>Postdoctoral fellows</h3>
+                    <p>Experimental and translational scientists in RNA biology, antisense or small-molecule splicing modulators, or disease-relevant cell models. Also computational scientists who want to design experiments and direct AI tools, not only build methods.</p>
                 </div>
-
-                <!-- Card 2 -->
-                <div class="research-card reveal reveal-delay-2">
-                    <div class="research-icon research-icon-2">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9.5 2A2.5 2.5 0 0112 4.5V6a6 6 0 016 6v1a2 2 0 01-2 2H8a2 2 0 01-2-2v-1a6 6 0 016-6V4.5A2.5 2.5 0 019.5 2z"/>
-                            <path d="M8 15v1a4 4 0 008 0v-1"/>
-                            <path d="M12 18v4"/>
-                            <path d="M8 22h8"/>
-                        </svg>
-                    </div>
-                    <h3>RNA Splicing in Disease</h3>
-                    <p>We seek to understand functional links between genetic variants and complex traits -- from Alzheimer's disease to autoimmune conditions -- with a particular emphasis on RNA splicing as a key mechanism mediating disease risk.</p>
+                <div>
+                    <h3>PhD students</h3>
+                    <p>Join through Genetics, Genomics &amp; Systems Biology (GGSB), Human Genetics, or Computational Biology at UChicago. Students who want to combine computation with bench work are especially welcome.</p>
                 </div>
-
-                <!-- Card 3 -->
-                <div class="research-card reveal reveal-delay-3">
-                    <div class="research-icon research-icon-3">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M10 2v7.527a2 2 0 01-.211.896L4.72 20.55a1 1 0 00.9 1.45h12.76a1 1 0 00.9-1.45l-5.069-10.127A2 2 0 0114 9.527V2"/>
-                            <path d="M8.5 2h7"/>
-                            <path d="M7 16h10"/>
-                        </svg>
-                    </div>
-                    <h3>Drugging RNA Splicing</h3>
-                    <p>We study how splice-switching molecules impact RNA splicing and explore their potential as therapeutic drugs, aiming to develop new approaches for modulating gene expression in disease-relevant tissues and cell types.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== TEAM ========== -->
-    <section class="section team" id="team">
-        <div class="section-inner">
-            <div class="section-header reveal">
-                <span class="section-label">Our Team</span>
-                <h2 class="section-title">Meet the People Behind<br>the Science</h2>
-                <p class="section-desc">Our lab is dedicated to training the next generation of computational biologists and geneticists. We foster a collaborative, inclusive environment where curiosity drives discovery.</p>
-            </div>
-
-            <div class="team-grid">
-                <!-- PI -->
-                <div class="team-card pi reveal reveal-delay-1" data-photo="photos/yang.jpg" data-fullname="Yang I Li, DPhil" data-role="Associate Professor &middot; PI" data-joined="Oct 2017" data-fullbio="Yang is an Associate Professor in the Section of Genetic Medicine. He grew up in China, Belgium, and Canada. He obtained a B.Sc. in Mathematics and Computer Science from McGill University (2009), a M.Phil. in Biological Sciences from the University of Liverpool (2010), and a D.Phil. in evolutionary genomics from the University of Oxford (2014). He worked with Jonathan Pritchard at Stanford before moving to UChicago in 2017. Outside lab he likes to hike, rock climb, cook, and travel.">
-                    <div class="team-avatar"><img src="photos/yang.jpg" alt="Yang I Li"></div>
-                    <div class="team-name">Yang I Li, DPhil</div>
-                    <div class="team-title">Associate Professor &middot; PI</div>
-                    <div class="team-bio">Section of Genetic Medicine, Department of Medicine</div>
-                </div>
-
-                <!-- Staff Scientist -->
-                <div class="team-card reveal reveal-delay-1" data-photo="photos/ben.png" data-fullname="Ben Fair, PhD" data-role="Staff Scientist" data-joined="September 2018" data-fullbio="Ben is a staff scientist in the lab. He was previously a postdoc jointly advised by Yoav Gilad. Ben grew up in Michigan, where he earned a BA in Biology at Grand Valley State University. He then earned a PhD in Molecular Biology at Cornell University in the laboratory of Jeffrey Pleiss. Outside of science he enjoys traveling and playing the drums.">
-                    <div class="team-avatar"><img src="photos/ben.png" alt="Ben Fair"></div>
-                    <div class="team-name">Ben Fair, PhD</div>
-                    <div class="team-title">Staff Scientist</div>
-                    <div class="team-bio">Drugging unproductive splicing</div>
-                </div>
-
-                <!-- Postdocs -->
-                <div class="team-card reveal reveal-delay-2" data-photo="photos/carlos.jpg" data-fullname="Carlos Buen Abad, PhD" data-role="Postdoctoral Fellow" data-joined="August 2021" data-fullbio="Carlos is a postdoc jointly advised by Matthew Stephens. He grew up in Colima, Mexico, and earned a BSc in Biology at UNAM, in Mexico City. He then earned a PhD in Computational Biology at UC Berkeley in Liana Lareau's and Nir Yosef's labs. Outside of the lab, Carlos practices Judo, reads about history, and enjoys spending time with his family.">
-                    <div class="team-avatar"><img src="photos/carlos.jpg" alt="Carlos Buen Abad"></div>
-                    <div class="team-name">Carlos Buen Abad, PhD</div>
-                    <div class="team-title">Postdoctoral Fellow</div>
-                    <div class="team-bio">Computational approaches to gene regulation</div>
-                </div>
-
-                <div class="team-card reveal reveal-delay-2" data-photo="photos/jimmy.jpg" data-fullname="Jimmy Elias, PhD" data-role="Postdoctoral Fellow" data-joined="June 2025" data-fullbio="Jimmy is a postdoc in the lab. He grew up in New Jersey then got a B.S. in Biomedical Engineering from Johns Hopkins University. He then earned his PhD at the University of Chicago in Alex Ruthenburg's lab. Outside of lab he loves playing sports (soccer, tennis, volleyball), biking, and hiking.">
-                    <div class="team-avatar"><img src="photos/jimmy.jpg" alt="Jimmy Elias"></div>
-                    <div class="team-name">Jimmy Elias, PhD</div>
-                    <div class="team-title">Postdoctoral Fellow</div>
-                    <div class="team-bio">Kinetics of RNA splicing</div>
-                </div>
-
-                <div class="team-card reveal reveal-delay-2" data-photo="photos/connor.jpeg" data-fullname="Connor Kenny, PhD" data-role="Postdoctoral Fellow" data-joined="September 2025" data-fullbio="Connor is a postdoc in the lab. He grew up in New Jersey and earned his BA in Neuroscience from Boston University. He stayed in Boston to work in Christopher A. Walsh's lab at Boston Children's Hospital, then went on to complete his PhD in Chris Burge's lab at MIT. Outside the lab, Connor enjoys traveling and works part-time at a local Chicago glass-blowing studio.">
-                    <div class="team-avatar"><img src="photos/connor.jpeg" alt="Connor Kenny"></div>
-                    <div class="team-name">Connor Kenny, PhD</div>
-                    <div class="team-title">Postdoctoral Fellow</div>
-                    <div class="team-bio">Mechanistic models of RNA splicing</div>
-                </div>
-
-                <!-- PhD Students -->
-                <div class="team-card reveal reveal-delay-3" data-photo="photos/dylan.png" data-fullname="Dylan Stermer, B.Sc." data-role="PhD Student &middot; GGSB" data-joined="August 2023" data-fullbio="Dylan is a PhD student in the Committee on Genetics, Genomics, and Systems Biology at UChicago. He grew up in Montreal and obtained a B.Sc in Pharmacology and Therapeutics from McGill University. In addition to his scientific interests Dylan is an international competitive sailor, and enjoys reading, camping and playing bass &amp; guitar.">
-                    <div class="team-avatar"><img src="photos/dylan.png" alt="Dylan Stermer"></div>
-                    <div class="team-name">Dylan Stermer, B.Sc.</div>
-                    <div class="team-title">PhD Student &middot; GGSB</div>
-                    <div class="team-bio">Genetics, Genomics &amp; Systems Biology</div>
-                </div>
-
-                <div class="team-card reveal reveal-delay-3" data-photo="photos/quinn.jpg" data-fullname="Quinn Hauck, B.Sc." data-role="PhD Student &middot; Human Genetics" data-joined="July 2024" data-fullbio="Quinn is a PhD student in Human Genetics. He grew up in Seattle and graduated with a B.Sc. in Biomedical Engineering from Johns Hopkins University. Outside of lab, he plays ultimate frisbee and enjoys watching baseball, hiking and traveling.">
-                    <div class="team-avatar"><img src="photos/quinn.jpg" alt="Quinn Hauck"></div>
-                    <div class="team-name">Quinn Hauck, B.Sc.</div>
-                    <div class="team-title">PhD Student &middot; Human Genetics</div>
-                    <div class="team-bio">Department of Human Genetics</div>
-                </div>
-
-                <div class="team-card reveal reveal-delay-3" data-photo="photos/hao.jpg" data-fullname="Hao Yu, B.S." data-role="PhD Student &middot; GGSB" data-joined="August 2023" data-fullbio="Hao Yu is a PhD student in GGSB who joined the lab in 2025. Hao earned a M.S. in computer science at UChicago and a B.S. in Biochemistry at the University of Hong Kong. Hao is interested in applying computational technologies to solve biological problems. Outside the lab, he enjoys riding, paddling and jogging.">
-                    <div class="team-avatar"><img src="photos/hao.jpg" alt="Hao Yu"></div>
-                    <div class="team-name">Hao Yu, B.S.</div>
-                    <div class="team-title">PhD Student &middot; GGSB</div>
-                    <div class="team-bio">Genetics, Genomics &amp; Systems Biology</div>
-                </div>
-
-                <!-- Staff -->
-                <div class="team-card reveal reveal-delay-4" data-photo="photos/sara.jpg" data-fullname="Sara Fritz, B.S." data-role="Research Lab Technician" data-joined="November 2024" data-fullbio="Sara is the research lab technician. She attended the University of Wisconsin where she earned a BS in Genetics and Genomics. She is excited to expand her research experiences and explore genetics through hands-on work. Outside of the lab, she loves hiking, cooking, crochet and photography.">
-                    <div class="team-avatar"><img src="photos/sara.jpg" alt="Sara Fritz"></div>
-                    <div class="team-name">Sara Fritz, B.S.</div>
-                    <div class="team-title">Research Lab Technician</div>
-                    <div class="team-bio">Laboratory operations and experimental support</div>
+                <div>
+                    <h3>Research scientists</h3>
+                    <p>Bench scientists who want to run high-throughput perturbation screens, such as ASO tiling or variant-by-modulator screens, in close collaboration with the computational side of the lab.</p>
                 </div>
             </div>
 
-            <!-- Alumni -->
-            <div class="alumni-section reveal">
-                <div style="text-align:center;">
-                    <button class="alumni-toggle" id="alumniToggle" onclick="toggleAlumni()">
-                        <span class="alumni-toggle-icon">&#9660;</span>
-                        View Lab Alumni
-                    </button>
-                </div>
-
-                <div class="alumni-list" id="alumniList">
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Fabio Morgante, PhD</strong> &mdash; Postdoc (2018&ndash;2020) &bull; Now faculty at Clemson University</div>
-                    </div>
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Phoenix (Zepeng) Mu, B.S.</strong> &mdash; PhD Student (2019&ndash;2024) &bull; Now postdoc at Harvard</div>
-                    </div>
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Ankeeta Shah, B.A.</strong> &mdash; PhD Student (2018&ndash;2023) &bull; Now at Piper Sandler</div>
-                    </div>
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Chao Dai, B.S.</strong> &mdash; PhD Student (2021&ndash;2025)</div>
-                    </div>
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Gabriela Mossian, B.A.</strong> &mdash; Lab Technician (2021&ndash;2023)</div>
-                    </div>
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Eric Chen, B.S.</strong> &mdash; Research Assistant (2021&ndash;2023) &bull; Now PhD student at Harvard</div>
-                </div>
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Yi Zeng, PhD</strong> &mdash; Postdoc (2021&ndash;2022) &bull; Now postdoc at Stanford</div>
-                    </div>
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Austin Reilley</strong> &mdash; Lab Technician (2020&ndash;2021)</div>
-                    </div>
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Stephanie Lozano, B.S.</strong> &mdash; Lab Technician (2018&ndash;2020) &bull; Now at UC Davis Neuroscience</div>
-                    </div>
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Tony Zeng, B.S.</strong> &mdash; Undergrad (2018&ndash;2021) &bull; Now PhD student at Stanford Genetics</div>
-                    </div>
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Shane Warland</strong> &mdash; Undergrad (2018&ndash;2021) &bull; Now PhD student at Cornell</div>
-                    </div>
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Henry Bloom</strong> &mdash; Undergrad (2022&ndash;2024)</div>
-                    </div>
-                    <div class="alumni-item">
-                        <div class="alumni-dot"></div>
-                        <div class="alumni-info"><strong>Alex Williams</strong> &mdash; Undergrad (2023&ndash;2024)</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== PUBLICATIONS ========== -->
-    <section class="section publications" id="publications">
-        <div class="section-inner">
-            <div class="section-header reveal">
-                <span class="section-label">Publications</span>
-                <h2 class="section-title">Selected Publications</h2>
-                <p class="section-desc">A selection of recent work from the lab. Visit our Google Scholar page for a complete list of publications.</p>
-            </div>
-
-            <div class="pub-list">
-                <!-- 2026 -->
-                <div class="pub-card reveal">
-                    <span class="pub-year">2026</span>
-                    <div class="pub-title"><a href="https://www.cell.com/cell-genomics/fulltext/S2666-979X(25)00317-9" target="_blank">Impact of disease-associated chromatin accessibility QTLs across immune cell types and contexts</a></div>
-                    <div class="pub-authors">Mu Z, Randolph HE, Aguirre-Gamboa R, Ketter E, Dumaine A, Locher V, et al.</div>
-                    <div class="pub-journal">Cell Genomics</div>
-                </div>
-                <div class="pub-card reveal">
-                    <span class="pub-year">2026</span>
-                    <div class="pub-title"><a href="https://www.nature.com/articles/s41588-025-02449-y" target="_blank">Protein–protein interactions shape <em>trans</em>-regulatory impact of genetic variation on protein expression and complex traits</a></div>
-                    <div class="pub-authors">Li J, <strong>Li YI</strong>, Liu X</div>
-                    <div class="pub-journal">Nature Genetics</div>
-                </div>
-
-                <!-- 2025 -->
-                <div class="pub-card reveal">
-                    <span class="pub-year">2025</span>
-                    <div class="pub-title"><a href="https://www.medrxiv.org/content/10.1101/2025.04.17.25326042v1" target="_blank">Integrative multi-omics QTL colocalization maps regulatory architecture in aging human brain</a></div>
-                    <div class="pub-authors">Cao X, Sun H, Feng R, Mazumder R, Buen Abad Najar CF, <strong>Li YI</strong>, et al.</div>
-                    <div class="pub-journal">medRxiv (preprint)</div>
-                </div>
-                <div class="pub-card reveal">
-                    <span class="pub-year">2025</span>
-                    <div class="pub-title"><a href="https://www.biorxiv.org/content/10.1101/2025.04.06.646893v1" target="_blank">Genetic and functional analysis of unproductive splicing using LeafCutter2</a></div>
-                    <div class="pub-authors">Buen Abad Najar CF, Feng R, Dai C, Fair B, Hauck Q, Li J, Cao X, Dey KK, et al.</div>
-                    <div class="pub-journal">bioRxiv (preprint)</div>
-                </div>
-
-                <!-- 2024 -->
-                <div class="pub-card reveal">
-                    <span class="pub-year">2024</span>
-                    <div class="pub-title"><a href="https://www.nature.com/articles/s41588-024-01872-x" target="_blank">Global impact of unproductive splicing on human gene expression levels</a></div>
-                    <div class="pub-authors">Fair BJ, Buen Abad Najar CF, Zhao J, Lozano S, Reilly A, Mossian G, Staley JP, Wang J, <strong>Li YI</strong></div>
-                    <div class="pub-journal">Nature Genetics</div>
-                </div>
-                <div class="pub-card reveal">
-                    <span class="pub-year">2024</span>
-                    <div class="pub-title"><a href="https://www.cell.com/cell/abstract/S0092-8674(24)00060-6" target="_blank">Genetic and molecular architecture of complex traits</a></div>
-                    <div class="pub-authors">Lappalainen T, <strong>Li YI</strong>, Ramachandran S, Gusev A</div>
-                    <div class="pub-journal">Cell</div>
-                </div>
-                <div class="pub-card reveal">
-                    <span class="pub-year">2024</span>
-                    <div class="pub-title"><a href="https://www.nature.com/articles/s41588-024-01668-z" target="_blank">Epigenetic variation impacts individual differences in the transcriptional response to influenza infection</a></div>
-                    <div class="pub-authors">Aracena K et al.</div>
-                    <div class="pub-journal">Nature Genetics</div>
-                </div>
-
-                <!-- 2023 -->
-                <div class="pub-card reveal">
-                    <span class="pub-year">2023</span>
-                    <div class="pub-title"><a href="https://www.nature.com/articles/s41588-023-01306-0" target="_blank">Genetics of sexually dimorphic adipose distribution in humans</a></div>
-                    <div class="pub-authors">Hansen GT et al.</div>
-                    <div class="pub-journal">Nature Genetics</div>
-                </div>
-                <div class="pub-card reveal">
-                    <span class="pub-year">2023</span>
-                    <div class="pub-title"><a href="https://www.nature.com/articles/s43586-022-00188-6" target="_blank">Molecular quantitative trait loci</a></div>
-                    <div class="pub-authors">Aguet F, Alasoo K, <strong>Li YI</strong>, Battle A, Im HK, Montgomery SB, Lappalainen T</div>
-                    <div class="pub-journal">Nature Reviews Methods Primers</div>
-                </div>
-
-                <!-- 2022 -->
-                <div class="pub-card reveal">
-                    <span class="pub-year">2022</span>
-                    <div class="pub-title"><a href="https://www.sciencedirect.com/science/article/abs/pii/S1097276522010668" target="_blank">Profiling lariat intermediates reveals genetic determinants of early and late co-transcriptional splicing</a></div>
-                    <div class="pub-authors">Zeng Y, Fair BJ, Zeng H, Krishnamohan A, Hou Y, Hall JM, Ruthenburg AJ, <strong>Li YI*</strong>, Staley JP*</div>
-                    <div class="pub-journal">Molecular Cell</div>
-                </div>
-                <div class="pub-card reveal">
-                    <span class="pub-year">2022</span>
-                    <div class="pub-title"><a href="https://www.nature.com/articles/s41586-022-05052-x" target="_blank">RNA editing underlies genetic risk of common inflammatory diseases</a></div>
-                    <div class="pub-authors">Li Q et al.</div>
-                    <div class="pub-journal">Nature</div>
-                </div>
-                <div class="pub-card reveal">
-                    <span class="pub-year">2022</span>
-                    <div class="pub-title"><a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-022-02664-4" target="_blank">Predicting RNA splicing from DNA sequence using Pangolin</a></div>
-                    <div class="pub-authors">Zeng T, <strong>Li YI</strong></div>
-                    <div class="pub-journal">Genome Biology</div>
-                </div>
-
-                <!-- 2021 -->
-                <div class="pub-card reveal">
-                    <span class="pub-year">2021</span>
-                    <div class="pub-title"><a href="https://www.science.org/doi/full/10.1126/science.abf7117" target="_blank">Haplotype-resolved diverse human genomes and integrated analysis of structural variation</a></div>
-                    <div class="pub-authors">Ebert et al.</div>
-                    <div class="pub-journal">Science</div>
-                </div>
-                <div class="pub-card reveal">
-                    <span class="pub-year">2021</span>
-                    <div class="pub-title"><a href="https://link.springer.com/article/10.1186/s13059-021-02502-z" target="_blank">Benchmarking sequencing methods and tools that facilitate the study of alternative polyadenylation</a></div>
-                    <div class="pub-authors">Shah A, Mittleman B, Gilad Y, <strong>Li YI</strong></div>
-                    <div class="pub-journal">Genome Biology</div>
-                </div>
-                <div class="pub-card reveal">
-                    <span class="pub-year">2021</span>
-                    <div class="pub-title"><a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02334-x" target="_blank">Impact of cell-type and context-dependent regulatory variants on human immune traits</a></div>
-                    <div class="pub-authors">Mu Z, Wei W, Fair B, Miao J, Zhu P*, <strong>Li YI*</strong></div>
-                    <div class="pub-journal">Genome Biology</div>
-                </div>
-                <div class="pub-card reveal">
-                    <span class="pub-year">2021</span>
-                    <div class="pub-title"><a href="https://genome.cshlp.org/content/31/4/698" target="_blank">Alignment of single-cell RNA-seq samples without over-correction using kernel density matching</a></div>
-                    <div class="pub-authors">Chen M, Zhan Q, Mu Z, Wang L, Zheng Z, Miao J, Zhu P*, <strong>Li YI*</strong></div>
-                    <div class="pub-journal">Genome Research</div>
-                </div>
-
-                <!-- 2020 -->
-                <div class="pub-card reveal">
-                    <span class="pub-year">2020</span>
-                    <div class="pub-title"><a href="https://elifesciences.org/articles/57492" target="_blank">Alternative polyadenylation mediates genetic regulation of gene expression</a></div>
-                    <div class="pub-authors">Mittleman B, Pott S, Warland S, Zeng T, Mu Z, Kaur M, Gilad Y, <strong>Li YI</strong></div>
-                    <div class="pub-journal">eLife</div>
-                </div>
-
-                <!-- 2019 -->
-                <div class="pub-card reveal">
-                    <span class="pub-year">2019</span>
-                    <div class="pub-title"><a href="https://www.sciencedirect.com/science/article/pii/S0092867419304003" target="_blank">Trans effects on gene expression can drive omnigenic inheritance</a></div>
-                    <div class="pub-authors">Liu X*, <strong>Li YI*</strong>, Pritchard JK*</div>
-                    <div class="pub-journal">Cell</div>
-                </div>
-                <div class="pub-card reveal">
-                    <span class="pub-year">2019</span>
-                    <div class="pub-title"><a href="https://www.nature.com/articles/s41467-019-08912-9" target="_blank">Prioritizing Parkinson's Disease genes using population-scale transcriptomic data</a></div>
-                    <div class="pub-authors"><strong>Li YI*</strong>, Wong G*, et al.</div>
-                    <div class="pub-journal">Nature Communications</div>
-                </div>
-
-                <!-- 2018 -->
-                <div class="pub-card reveal">
-                    <span class="pub-year">2018</span>
-                    <div class="pub-title"><a href="https://www.nature.com/articles/s41588-017-0004-9" target="_blank">Annotation-free quantification of RNA splicing using LeafCutter</a></div>
-                    <div class="pub-authors"><strong>Li YI*</strong>, Knowles DA*, Humphrey J, Barbeira AN, Dickinson SP, Im HK, Pritchard JK</div>
-                    <div class="pub-journal">Nature Genetics</div>
-                </div>
-
-                <!-- 2017 -->
-                <div class="pub-card reveal">
-                    <span class="pub-year">2017</span>
-                    <div class="pub-title"><a href="https://www.cell.com/cell/fulltext/S0092-8674(17)30629-3" target="_blank">An expanded view of complex traits: from polygenic to omnigenic</a></div>
-                    <div class="pub-authors">Boyle EA*, <strong>Li YI*</strong>, Pritchard JK*</div>
-                    <div class="pub-journal">Cell</div>
-                </div>
-
-                <!-- 2016 -->
-                <div class="pub-card reveal">
-                    <span class="pub-year">2016</span>
-                    <div class="pub-title"><a href="https://www.science.org/doi/10.1126/science.aad9417" target="_blank">RNA splicing is a primary link between genetic variation and disease</a></div>
-                    <div class="pub-authors"><strong>Li YI</strong>, van de Geijn B, Raj A, Knowles DA, Petti A, Golan D, Gilad Y, Pritchard JK</div>
-                    <div class="pub-journal">Science</div>
-                </div>
-            </div>
-
-            <div class="pub-more reveal">
-                <a href="http://scholar.google.com/citations?user=d18UeLEAAAAJ&hl=en" target="_blank" rel="noopener">
-                    View All on Google Scholar
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 12L12 4M12 4H6M12 4v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== JOIN US ========== -->
-    <section class="section join" id="join">
-        <div class="hero-grid"></div>
-
-        <div class="section-inner">
-            <div class="section-header reveal">
-                <span class="section-label">Opportunities</span>
-                <h2 class="section-title">Join Our Team</h2>
-                <p class="section-desc">We are always looking for talented and motivated individuals to join our team. If you are passionate about computational genomics and gene regulation, we would love to hear from you.</p>
-            </div>
-
-            <div class="join-grid">
-                <div class="join-card reveal reveal-delay-1">
-                    <div class="join-card-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffa319" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 010 7.75"/>
-                        </svg>
-                    </div>
-                    <h3>Postdoctoral Fellows</h3>
-                    <p>We are seeking postdocs with a strong background in computational biology, statistical genetics, or related fields. Experience with genomic data analysis, machine learning, or molecular biology is highly valued. We provide a collaborative environment with access to world-class resources at the University of Chicago.</p>
-                </div>
-
-                <div class="join-card reveal reveal-delay-2">
-                    <div class="join-card-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffa319" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                            <path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/>
-                        </svg>
-                    </div>
-                    <h3>PhD Students</h3>
-                    <p>Prospective PhD students can join through the Genetics, Genomics &amp; Systems Biology (GGSB), Human Genetics, or Computational Biology programs at the University of Chicago. We welcome students with backgrounds in biology, computer science, statistics, or related quantitative disciplines.</p>
-                </div>
-            </div>
-
-            <div class="join-expectations reveal">
-                <div class="join-expect-col">
-                    <h4>What to Expect from the PI</h4>
-                    <ul>
+            <div class="pact">
+                <div>
+                    <h4>What you can expect from me</h4>
+                    <ol>
                         <li>Identification and creation of career-advancing opportunities</li>
                         <li>Weekly meetings to discuss research and exchange ideas</li>
                         <li>Support designing focused projects for timely publication</li>
-                        <li>Assistance interpreting results and prioritizing next steps</li>
+                        <li>Help interpreting results and prioritizing next steps</li>
                         <li>Editing and feedback on grants and written materials</li>
                         <li>Annual career development plan reviews</li>
-                        <li>Attendance at 1&ndash;2 conferences per year</li>
-                    </ul>
+                        <li>Attendance at 1–2 conferences per year</li>
+                        <li>Training in experimental design and mechanistic biology, not just analysis</li>
+                        <li>Involvement in clinical collaborations around rare splice variants</li>
+                        <li>Hands-on experience with the lab's AI-driven analysis workflows, including where they fail</li>
+                    </ol>
                 </div>
-                <div class="join-expect-col">
-                    <h4>What is Expected from Lab Members</h4>
-                    <ul>
+                <div>
+                    <h4>What I expect from you</h4>
+                    <ol>
                         <li>Conduct yourself with the utmost scientific integrity</li>
                         <li>Maintain sustainable, reproducible code for data analysis</li>
-                        <li>Read approximately 5 papers weekly</li>
-                        <li>Attend lab meetings (with advance notice if absent)</li>
+                        <li>Read approximately 5 papers a week</li>
+                        <li>Attend lab meetings, with advance notice if absent</li>
                         <li>Actively pursue external funding and grant applications</li>
-                        <li>Be present in lab minimum 4 days/week, 10am&ndash;5pm</li>
+                        <li>Be in lab at least 4 days a week, 10am–5pm</li>
                         <li>Identify and apply for all relevant external funding opportunities</li>
-                    </ul>
+                        <li>Think in experiments: what result would change your mind?</li>
+                        <li>Use AI tools critically: verify outputs, and don't outsource your judgment</li>
+                    </ol>
                 </div>
             </div>
 
-            <div class="join-contact reveal">
-                <p>Interested? Reach out with your CV and a brief description of your research interests.</p>
-                <a href="mailto:yangili1@uchicago.edu" class="join-email">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="4" width="20" height="16" rx="2"/>
-                        <path d="M22 7l-10 7L2 7"/>
-                    </svg>
-                    yangili1@uchicago.edu
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== TEAM MODAL ========== -->
-    <div class="modal-overlay" id="teamModal">
-        <div class="modal-content">
-            <button class="modal-close" id="modalClose">&times;</button>
-            <div class="modal-header">
-                <div class="modal-avatar" id="modalAvatar"></div>
-                <div class="modal-info">
-                    <h3 id="modalName"></h3>
-                    <div class="modal-role" id="modalRole"></div>
-                    <div class="modal-joined" id="modalJoined"></div>
-                </div>
-            </div>
-            <div class="modal-body">
-                <p id="modalBio"></p>
+            <div class="write">
+                <span class="mono">Write to</span>
+                <a href="mailto:yangili1@uchicago.edu">yangili1<span>@</span>uchicago.edu</a>
+                <p>Send your CV and a short description of your research interests.</p>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- ========== FOOTER ========== -->
-    <footer class="footer">
-        <div class="footer-inner">
-            <div>
-                <div class="footer-brand-name">The Li Lab</div>
-                <div class="footer-brand-sub">University of Chicago</div>
-                <div class="footer-address">
-                    Section of Genetic Medicine<br>
-                    Department of Medicine<br>
-                    University of Chicago<br>
-                    Chicago, IL 60637
-                </div>
-            </div>
+</main>
 
-            <div>
-                <div class="footer-heading">Navigation</div>
-                <ul class="footer-links">
-                    <li><a href="#research">Research</a></li>
-                    <li><a href="#team">Team</a></li>
-                    <li><a href="#publications">Publications</a></li>
-                    <li><a href="#join">Join Us</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <div class="footer-heading">Resources</div>
-                <ul class="footer-links">
-                    <li><a href="http://scholar.google.com/citations?user=d18UeLEAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a></li>
-                    <li><a href="https://github.com/" target="_blank" rel="noopener">GitHub</a></li>
-                    <li><a href="https://www.uchicago.edu/" target="_blank" rel="noopener">UChicago</a></li>
-                    <li><a href="mailto:yangili1@uchicago.edu">Contact</a></li>
-                </ul>
-            </div>
+<footer>
+    <div class="wrap">
+        <div class="f1"><strong>Li Lab</strong>University of Chicago</div>
+        <div class="f2">Section of Genetic Medicine, Department of Medicine<br>Chicago, IL 60637</div>
+        <div class="f3">
+            <a href="http://scholar.google.com/citations?user=d18UeLEAAAAJ&amp;hl=en" target="_blank" rel="noopener">Scholar</a>
+            <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.uchicago.edu/" target="_blank" rel="noopener">UChicago</a>
+            <a href="mailto:yangili1@uchicago.edu">Email</a>
+            <span class="mono" style="color:var(--ink-3)">© 2026</span>
         </div>
+    </div>
+</footer>
 
-        <div class="footer-bottom">
-            <div class="footer-copy">&copy; 2025 The Li Lab. All rights reserved.</div>
-            <div class="footer-uchicago">University of Chicago &middot; Department of Medicine</div>
+<dialog id="bio" aria-labelledby="bioName">
+    <div class="dlg">
+        <img id="bioPhoto" src="" alt="">
+        <div class="dlg-body">
+            <button class="dlg-close" type="button" aria-label="Close">×</button>
+            <span class="mono" id="bioRole"></span>
+            <h3 id="bioName"></h3>
+            <span class="mono joined" id="bioJoined"></span>
+            <p id="bioText"></p>
         </div>
-    </footer>
+    </div>
+</dialog>
 
-    <!-- ========== SCRIPTS ========== -->
-    <script>
-        // Sticky navbar
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
+<script>
+    // Bio dialog
+    const dlg = document.getElementById('bio');
+    document.querySelectorAll('.person button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const d = btn.dataset;
+            document.getElementById('bioPhoto').src = d.photo;
+            document.getElementById('bioPhoto').alt = 'Portrait of ' + d.name;
+            document.getElementById('bioName').textContent = d.name;
+            document.getElementById('bioRole').textContent = d.role;
+            document.getElementById('bioJoined').textContent = d.joined ? 'Joined ' + d.joined : '';
+            document.getElementById('bioText').textContent = d.bio;
+            dlg.showModal();
         });
+    });
+    dlg.querySelector('.dlg-close').addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
 
-        // Mobile menu
-        const hamburger = document.getElementById('hamburger');
-        const mobileNav = document.getElementById('mobileNav');
-
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            mobileNav.classList.toggle('active');
-            document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
+    // Underline the nav link for the section in view
+    const links = [...document.querySelectorAll('.masthead nav a')];
+    const spy = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (!e.isIntersecting) return;
+            links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id));
         });
-
-        // Close mobile nav on link click
-        document.querySelectorAll('.mobile-nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                mobileNav.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-        });
-
-        // Intersection Observer for reveal animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Alumni toggle
-        function toggleAlumni() {
-            const toggle = document.getElementById('alumniToggle');
-            const list = document.getElementById('alumniList');
-            toggle.classList.toggle('open');
-            list.classList.toggle('open');
-            toggle.querySelector('.alumni-toggle-icon').textContent = list.classList.contains('open') ? '\u25B2' : '\u25BC';
-        }
-
-        // Smooth scroll for anchor links (fallback for older browsers)
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    const offset = 72; // navbar height
-                    const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-                    window.scrollTo({ top, behavior: 'smooth' });
-                }
-            });
-        });
-
-        // Team member modal
-        const teamModal = document.getElementById('teamModal');
-        const modalClose = document.getElementById('modalClose');
-
-        document.querySelectorAll('.team-card[data-fullbio]').forEach(card => {
-            card.addEventListener('click', () => {
-                document.getElementById('modalAvatar').innerHTML = '<img src="' + card.dataset.photo + '" alt="' + card.dataset.fullname + '">';
-                document.getElementById('modalName').textContent = card.dataset.fullname;
-                document.getElementById('modalRole').innerHTML = card.dataset.role;
-                document.getElementById('modalJoined').textContent = 'Joined ' + card.dataset.joined;
-                document.getElementById('modalBio').innerHTML = card.dataset.fullbio;
-                teamModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
-        });
-
-        modalClose.addEventListener('click', () => {
-            teamModal.classList.remove('active');
-            document.body.style.overflow = '';
-        });
-
-        teamModal.addEventListener('click', (e) => {
-            if (e.target === teamModal) {
-                teamModal.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && teamModal.classList.contains('active')) {
-                teamModal.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        });
-
-        // Active nav link highlighting
-        const sections = document.querySelectorAll('section[id]');
-        window.addEventListener('scroll', () => {
-            const scrollPos = window.scrollY + 100;
-            sections.forEach(section => {
-                const top = section.offsetTop - 100;
-                const bottom = top + section.offsetHeight;
-                const id = section.getAttribute('id');
-                const navLink = document.querySelector(`.nav-links a[href="#${id}"]`);
-                if (navLink) {
-                    if (scrollPos >= top && scrollPos < bottom) {
-                        navLink.style.color = '#ffffff';
-                    } else {
-                        navLink.style.color = '';
-                    }
-                }
-            });
-        });
-    </script>
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    document.querySelectorAll('section[id]').forEach(s => spy.observe(s));
+</script>
 </body>
 </html>
